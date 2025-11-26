@@ -30,9 +30,9 @@ const modules = [
 
 export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
   return (
-    <div className="w-64 bg-white dark:bg-dark-card border-r border-gray-200 dark:border-dark-border flex flex-col">
-      <div className="p-6 border-b border-gray-200 dark:border-dark-border">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">Business Manager</h1>
+    <div className="w-64 bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-r border-gray-200 dark:border-dark-border flex flex-col">
+      <div className="p-6 border-b border-gray-200 dark:border-dark-border bg-white/80 dark:bg-dark-card/80 backdrop-blur-md">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">Runi</h1>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -60,7 +60,7 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-dark-border">
+      <div className="p-4 border-t border-gray-200 dark:border-dark-border bg-white/80 dark:bg-dark-card/80 backdrop-blur-md">
         <SignOutButton />
       </div>
     </div>
