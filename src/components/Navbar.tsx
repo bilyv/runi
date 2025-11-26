@@ -1,41 +1,36 @@
-import { UserCircle, Search } from "lucide-react";
+import { UserCircle } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 export function Navbar() {
     const { theme, toggleTheme } = useTheme();
+    const user = useQuery(api.auth.loggedInUser);
 
     return (
         <div className="h-16 px-4 md:px-6 flex items-center justify-between bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border sticky top-0 z-10">
-            <div className="flex items-center gap-4 flex-1">
-                {/* Search bar - hidden on mobile, visible on md and larger */}
-                <div className="hidden md:block relative w-96">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-dark-text" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-dark-card border-none rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-dark-bg transition-all outline-none text-gray-900 dark:text-dark-text"
-                    />
-                </div>
+            <div className="flex items-center gap-4">
+                {/* Application name */}
+                <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">Runi</h1>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
                 <button 
                     onClick={toggleTheme}
-                    className="p-2 text-gray-500 dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-card rounded-full transition-colors"
+                    className="p-1.5 text-gray-500 dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-card rounded-full transition-colors"
                 >
-                    {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+                    {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
 
-                <div className="h-8 w-px bg-gray-200 dark:bg-dark-border mx-2"></div>
-
-                <button className="flex items-center gap-3 p-1.5 pr-3 hover:bg-gray-100 dark:hover:bg-dark-card rounded-full transition-all">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-dark-card text-blue-600 dark:text-dark-text rounded-full flex items-center justify-center">
-                        <UserCircle size={20} />
+                <button className="flex items-center gap-2 p-1 hover:bg-gray-100 dark:hover:bg-dark-card rounded-full transition-all">
+                    <div className="w-7 h-7 bg-blue-100 dark:bg-dark-card text-blue-600 dark:text-dark-text rounded-full flex items-center justify-center">
+                        <UserCircle size={18} />
                     </div>
-                    <div className="text-sm text-left hidden sm:block">
-                        <p className="font-medium text-gray-700 dark:text-dark-text">John Doe</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Admin</p>
+                    <div className="text-left hidden sm:block">
+                        <p className="text-sm font-medium text-gray-700 dark:text-dark-text">
+                            {user?.fullName || user?.name || user?.businessName || "User"}
+                        </p>
                     </div>
                 </button>
             </div>
