@@ -11,8 +11,8 @@ export function Navbar() {
     return (
         <div className="h-16 px-4 md:px-6 flex items-center justify-between bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border sticky top-0 z-10">
             <div className="flex items-center gap-4">
-                {/* Application name */}
-                <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">Runi</h1>
+                {/* Application name - only visible on mobile */}
+                <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text md:hidden">Runi</h1>
             </div>
 
             <div className="flex items-center gap-2">
