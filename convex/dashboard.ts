@@ -2,6 +2,75 @@ import { query } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+// Helper function to generate date ranges
+function getDateRanges(period: "daily" | "weekly" | "monthly") {
+  const now = new Date();
+  let startDate: Date;
+  let interval: "day" | "week" | "month";
+
+  switch (period) {
+    case "daily":
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+      interval = "day";
+      break;
+    case "weekly":
+      startDate = new Date(now.getTime() - 7 * 7 * 24 * 60 * 60 * 1000); // 7 weeks
+      interval = "week";
+      break;
+    case "monthly":
+      startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1); // 6 months
+      interval = "month";
+      break;
+  }
+
+  return { startDate, interval };
+}
+
+// Helper function to group data by date
+function groupDataByDate(data: any[], startDate: Date, interval: "day" | "week" | "month", period: "daily" | "weekly" | "monthly") {
+  const grouped: Record<string, number> = {};
+  
+  // Initialize all periods with 0
+  const currentDate = new Date(startDate);
+  const periods = [];
+  
+  for (let i = 0; i < (period === "daily" ? 7 : period === "weekly" ? 7 : 6); i++) {
+    const key = formatDate(currentDate, period);
+    grouped[key] = 0;
+    periods.push(key);
+    if (interval === "day") currentDate.setDate(currentDate.getDate() + 1);
+    else if (interval === "week") currentDate.setDate(currentDate.getDate() + 7);
+    else if (interval === "month") currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+  
+  // Group actual data
+  data.forEach(item => {
+    const itemDate = new Date(item._creationTime);
+    const key = formatDate(itemDate, period);
+    if (grouped.hasOwnProperty(key)) {
+      grouped[key] += item.amountPaid || item.amount || 0;
+    }
+  });
+  
+  // Convert to array format for charts
+  return periods.map(period => ({
+    name: period,
+    value: grouped[period]
+  }));
+}
+
+// Helper function to format dates
+function formatDate(date: Date, period: "daily" | "weekly" | "monthly"): string {
+  if (period === "daily") {
+    return date.toLocaleDateString('en-US', { weekday: 'short' });
+  } else if (period === "weekly") {
+    const weekNumber = Math.ceil(date.getDate() / 7);
+    return `Week ${weekNumber}`;
+  } else {
+    return date.toLocaleDateString('en-US', { month: 'short' });
+  }
+}
+
 export const getStats = query({
   args: {
     period: v.union(v.literal("daily"), v.literal("weekly"), v.literal("monthly")),
@@ -10,20 +79,7 @@ export const getStats = query({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Not authenticated");
 
-    const now = new Date();
-    let startDate: Date;
-
-    switch (args.period) {
-      case "daily":
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        break;
-      case "weekly":
-        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        break;
-      case "monthly":
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        break;
-    }
+    const { startDate, interval } = getDateRanges(args.period);
 
     // Get sales data
     const sales = await ctx.db
@@ -36,6 +92,10 @@ export const getStats = query({
       .query("expenses")
       .withIndex("by_creation_time", (q) => q.gte("_creationTime", startDate.getTime()))
       .collect();
+
+    // Group data for charts
+    const revenueData = groupDataByDate(sales, startDate, interval, args.period);
+    const expenseData = groupDataByDate(expenses, startDate, interval, args.period);
 
     // Get all products
     const products = await ctx.db.query("products").collect();
@@ -72,13 +132,13 @@ export const getStats = query({
     const lastPeriodStart = new Date(startDate);
     switch (args.period) {
       case "daily":
-        lastPeriodStart.setDate(lastPeriodStart.getDate() - 1);
-        break;
-      case "weekly":
         lastPeriodStart.setDate(lastPeriodStart.getDate() - 7);
         break;
+      case "weekly":
+        lastPeriodStart.setDate(lastPeriodStart.getDate() - 49); // 7 weeks
+        break;
       case "monthly":
-        lastPeriodStart.setMonth(lastPeriodStart.getMonth() - 1);
+        lastPeriodStart.setMonth(lastPeriodStart.getMonth() - 6); // 6 months
         break;
     }
     
@@ -100,7 +160,19 @@ export const getStats = query({
       totalProfit: actualProfit,
       lowStockCount: lowStockProducts.length,
       lowStockProducts: lowStockProducts.slice(0, 5), // Top 5 low stock items
-      recentSales: sales.slice(0, 5), // 5 most recent sales
+      recentSales: sales.slice(0, 5), // 5 most recent sales,
+      
+      // Chart data
+      revenueData,
+      expenseData,
+      
+      // Financial overview data
+      financialOverview: {
+        revenue: totalRevenue,
+        profit: actualProfit,
+        expenses: totalExpenses,
+        damages: damagedItemsCount * 10 // Simulated damage cost
+      },
       
       // New fields for the updated dashboard
       totalProductsInStock,
