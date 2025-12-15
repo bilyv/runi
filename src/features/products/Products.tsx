@@ -6,6 +6,7 @@ import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
 import { Input } from "../../components/ui/Input";
 import { toast } from "sonner";
+import { AddCategoryModal } from "./AddCategoryModal";
 
 type TabType = "category" | "adding" | "liveStock";
 
@@ -13,6 +14,7 @@ export function Products() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<TabType>("liveStock");
   const [prevTab, setPrevTab] = useState<TabType>("liveStock");
@@ -21,10 +23,9 @@ export function Products() {
     search: search || undefined,
     category: category || undefined
   });
+  const categories = useQuery(api.productCategories.list) || [];
   const createProduct = useMutation(api.products.create);
   const updateProduct = useMutation(api.products.update);
-
-  const categories = [...new Set(products?.map(p => p.category) || [])];
 
   const handleSubmit = async (formData: any) => {
     try {
@@ -92,8 +93,8 @@ export function Products() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id as TabType)}
               className={`px-6 py-4 text-sm font-medium relative transition-all duration-300 ease-in-out ${activeTab === tab.id
-                  ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10"
-                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-card/50"
+                ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-card/50"
                 }`}
               style={{
                 borderTopLeftRadius: tab.id === tabs[0].id ? '0.75rem' : '0',
@@ -111,7 +112,10 @@ export function Products() {
         {/* Tab Content with Slide Animation */}
         <div className="p-6 overflow-hidden">
           <div className={`${getAnimationClass("category")}`}>
-            <CategoryTab categories={categories} />
+            <CategoryTab
+              categories={categories}
+              onAddCategory={() => setShowCategoryModal(true)}
+            />
           </div>
           <div className={`${getAnimationClass("adding")}`}>
             <AddingTab
@@ -141,6 +145,12 @@ export function Products() {
         }}
         onSubmit={handleSubmit}
         product={editingProduct}
+      />
+
+      {/* Add Category Modal */}
+      <AddCategoryModal
+        isOpen={showCategoryModal}
+        onClose={() => setShowCategoryModal(false)}
       />
     </div>
   );
@@ -272,12 +282,22 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
 }
 
 // Category Tab Component
-function CategoryTab({ categories }: { categories: string[] }) {
+function CategoryTab({
+  categories,
+  onAddCategory
+}: {
+  categories: Array<{ _id: any; category_name: string; _creationTime: number }>;
+  onAddCategory: () => void;
+}) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text">Product Categories</h2>
-        <Button variant="primary" className="flex items-center gap-2">
+        <Button
+          variant="primary"
+          className="flex items-center gap-2"
+          onClick={onAddCategory}
+        >
           <Plus size={16} />
           Add Category
         </Button>
@@ -287,7 +307,7 @@ function CategoryTab({ categories }: { categories: string[] }) {
         {categories.length > 0 ? (
           categories.map((cat) => (
             <div
-              key={cat}
+              key={cat._id}
               className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
@@ -296,7 +316,7 @@ function CategoryTab({ categories }: { categories: string[] }) {
                     <Package size={20} className="text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900 dark:text-dark-text">{cat}</h3>
+                    <h3 className="font-medium text-gray-900 dark:text-dark-text">{cat.category_name}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Category</p>
                   </div>
                 </div>
@@ -308,7 +328,7 @@ function CategoryTab({ categories }: { categories: string[] }) {
           ))
         ) : (
           <div className="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
-            No categories found. Add products to see categories.
+            No categories found. Click "Add Category" to create one.
           </div>
         )}
       </div>
@@ -405,8 +425,8 @@ function LiveStockTab({
           className="px-4 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text"
         >
           <option value="">All Categories</option>
-          {categories.map((cat: string) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat: any) => (
+            <option key={cat._id} value={cat.category_name}>{cat.category_name}</option>
           ))}
         </select>
       </div>

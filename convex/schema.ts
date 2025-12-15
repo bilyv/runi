@@ -36,6 +36,15 @@ const applicationTables = {
     .index("by_category", ["category"])
     .index("by_stock", ["stock"]),
 
+  // Product Categories
+  productcategory: defineTable({
+    user_id: v.id("users"),
+    category_name: v.string(),
+    updated_at: v.number(),
+  })
+    .index("by_user", ["user_id"])
+    .index("by_user_and_name", ["user_id", "category_name"]),
+
 
 
   // Sales
