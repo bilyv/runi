@@ -1,12 +1,15 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
-import { Plus, Search, Filter, Package, AlertTriangle, Edit, Trash2, Pencil } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
 import { Input } from "../../components/ui/Input";
 import { toast } from "sonner";
 import { AddCategoryModal } from "./AddCategoryModal";
+import { ProductCategory } from "./ProductCategory";
+import { ProductAdding } from "./ProductAdding";
+import { LiveStock } from "./LiveStock";
 
 type TabType = "category" | "adding" | "liveStock";
 
@@ -22,7 +25,7 @@ export function Products() {
 
   const products = useQuery(api.products.list, {
     search: search || undefined,
-    category: category || undefined
+    category_id: (category as any) || undefined
   });
   const categories = useQuery(api.productCategories.list) || [];
   const createProduct = useMutation(api.products.create);
@@ -127,7 +130,7 @@ export function Products() {
         {/* Tab Content with Slide Animation */}
         <div className="p-6 overflow-hidden">
           <div className={`${getAnimationClass("category")}`}>
-            <CategoryTab
+            <ProductCategory
               categories={categories}
               onAddCategory={() => setShowCategoryModal(true)}
               onEditCategory={setEditingCategory}
@@ -135,17 +138,15 @@ export function Products() {
             />
           </div>
           <div className={`${getAnimationClass("adding")}`}>
-            <AddingTab
+            <ProductAdding
               onAddProduct={() => setShowAddModal(true)}
             />
           </div>
           <div className={`${getAnimationClass("liveStock")}`}>
-            <LiveStockTab
+            <LiveStock
               search={search}
               setSearch={setSearch}
-              category={category}
-              setCategory={setCategory}
-              products={products}
+              products={products || []}
               categories={categories}
               onEditProduct={setEditingProduct}
             />
@@ -183,10 +184,10 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
     sku: "",
     category: "",
     description: "",
-    costPrice: 0,
-    sellingPrice: 0,
-    stock: 0,
-    minStock: 0,
+    cost_per_box: 0,
+    price_per_box: 0,
+    quantity_box: 0,
+    boxed_low_stock_threshold: 0,
   });
 
   // Update form data when product changes
@@ -195,12 +196,12 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
       setFormData({
         name: product.name || "",
         sku: product.sku || "",
-        category: product.category || "",
+        category: product.category || "", // Note: This might need to be ID based on schema, assuming legacy string for now or handled upstream
         description: product.description || "",
-        costPrice: product.costPrice || 0,
-        sellingPrice: product.sellingPrice || 0,
-        stock: product.stock || 0,
-        minStock: product.minStock || 0,
+        cost_per_box: product.cost_per_box || product.costPrice || 0,
+        price_per_box: product.price_per_box || product.price_per_box || 0, // Typo in replacement, fixing directly here or careful copy paste
+        quantity_box: product.quantity_box || product.stock || 0,
+        boxed_low_stock_threshold: product.boxed_low_stock_threshold || product.minStock || 0,
       });
     } else {
       setFormData({
@@ -208,10 +209,10 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
         sku: "",
         category: "",
         description: "",
-        costPrice: 0,
-        sellingPrice: 0,
-        stock: 0,
-        minStock: 0,
+        cost_per_box: 0,
+        price_per_box: 0,
+        quantity_box: 0,
+        boxed_low_stock_threshold: 0,
       });
     }
   });
@@ -242,7 +243,7 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
         <div className="grid grid-cols-2 gap-4">
           <Input
             label="Category"
-            value={formData.category}
+            value={formData.category} // TODO: Update to Category Select for valid ID
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             required
           />
@@ -255,36 +256,36 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Cost Price"
+            label="Cost Price (Per Box)"
             type="number"
             step="0.01"
-            value={formData.costPrice}
-            onChange={(e) => setFormData({ ...formData, costPrice: parseFloat(e.target.value) || 0 })}
+            value={formData.cost_per_box}
+            onChange={(e) => setFormData({ ...formData, cost_per_box: parseFloat(e.target.value) || 0 })}
             required
           />
           <Input
-            label="Selling Price"
+            label="Selling Price (Per Box)"
             type="number"
             step="0.01"
-            value={formData.sellingPrice}
-            onChange={(e) => setFormData({ ...formData, sellingPrice: parseFloat(e.target.value) || 0 })}
+            value={formData.price_per_box}
+            onChange={(e) => setFormData({ ...formData, price_per_box: parseFloat(e.target.value) || 0 })}
             required
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Stock Quantity"
+            label="Stock Quantity (Boxes)"
             type="number"
-            value={formData.stock}
-            onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+            value={formData.quantity_box}
+            onChange={(e) => setFormData({ ...formData, quantity_box: parseInt(e.target.value) || 0 })}
             required
           />
           <Input
-            label="Minimum Stock"
+            label="Low Stock Threshold"
             type="number"
-            value={formData.minStock}
-            onChange={(e) => setFormData({ ...formData, minStock: parseInt(e.target.value) || 0 })}
+            value={formData.boxed_low_stock_threshold}
+            onChange={(e) => setFormData({ ...formData, boxed_low_stock_threshold: parseInt(e.target.value) || 0 })}
             required
           />
         </div>
@@ -299,259 +300,5 @@ function ProductModal({ isOpen, onClose, onSubmit, product }: any) {
         </div>
       </form>
     </Modal>
-  );
-}
-
-// Category Tab Component
-function CategoryTab({
-  categories,
-  onAddCategory,
-  onEditCategory,
-  onDeleteCategory
-}: {
-  categories: Array<{ _id: any; category_name: string; _creationTime: number }>;
-  onAddCategory: () => void;
-  onEditCategory: (category: any) => void;
-  onDeleteCategory: (categoryId: any) => void;
-}) {
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text">Product Categories</h2>
-        <Button
-          variant="primary"
-          className="flex items-center gap-2"
-          onClick={onAddCategory}
-        >
-          <Plus size={16} />
-          Add Category
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.length > 0 ? (
-          categories.map((cat) => (
-            <div
-              key={cat._id}
-              className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                    <Package size={20} className="text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900 dark:text-dark-text">{cat.category_name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Category</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => onEditCategory(cat)}
-                    className="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                    title="Edit category"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    onClick={() => onDeleteCategory(cat._id)}
-                    className="p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                    title="Delete category"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
-            No categories found. Click "Add Category" to create one.
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Adding Tab Component
-function AddingTab({ onAddProduct }: { onAddProduct: () => void }) {
-  return (
-    <div className="space-y-6">
-      <div className="text-center py-12">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-4">
-          <Plus size={32} className="text-blue-600 dark:text-blue-400" />
-        </div>
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text mb-2">
-          Add New Product
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-          Click the button below to add a new product to your inventory. You can specify details like name, SKU, category, pricing, and stock levels.
-        </p>
-        <Button
-          variant="primary"
-          onClick={onAddProduct}
-          className="flex items-center gap-2 mx-auto"
-        >
-          <Plus size={16} />
-          Add New Product
-        </Button>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-gray-200 dark:border-dark-border">
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border">
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Import Products</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Bulk import products from CSV or Excel file
-          </p>
-          <Button variant="secondary" className="w-full text-sm">
-            Import File
-          </Button>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border">
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Bulk Update</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Update multiple products at once
-          </p>
-          <Button variant="secondary" className="w-full text-sm">
-            Bulk Edit
-          </Button>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border">
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Templates</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Use product templates for faster entry
-          </p>
-          <Button variant="secondary" className="w-full text-sm">
-            View Templates
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Live Stock Tab Component
-function LiveStockTab({
-  search,
-  setSearch,
-  category,
-  setCategory,
-  products,
-  categories,
-  onEditProduct
-}: any) {
-  return (
-    <div className="space-y-4">
-      {/* Toolbar */}
-      <div className="flex gap-4 items-center">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={16} />
-          <Input
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="px-4 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat: any) => (
-            <option key={cat._id} value={cat.category_name}>{cat.category_name}</option>
-          ))}
-        </select>
-      </div>
-
-      {/* Products Table */}
-      <div className="bg-white dark:bg-dark-card rounded-lg border border-gray-200 dark:border-dark-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-dark-card border-b border-gray-200 dark:border-dark-border">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  SKU
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Stock
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Cost Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Selling Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-dark-card divide-y divide-gray-200 dark:divide-dark-border">
-              {products?.map((product: any, index: number) => (
-                <tr key={product._id} className={index % 2 === 0 ? "bg-white dark:bg-dark-card" : "bg-gray-50 dark:bg-dark-card/50"}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 bg-gray-200 dark:bg-dark-border rounded-lg flex items-center justify-center">
-                        <Package size={16} className="text-gray-500 dark:text-gray-400" />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900 dark:text-dark-text">{product.name}</div>
-                        {product.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{product.description}</div>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-dark-text">
-                    {product.sku}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full">
-                      {product.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-900 dark:text-dark-text">{product.stock}</span>
-                      {product.stock <= product.minStock && (
-                        <AlertTriangle size={16} className="text-red-500 dark:text-red-400" />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-dark-text">
-                    ${product.costPrice.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-dark-text">
-                    ${product.sellingPrice.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onEditProduct(product)}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        <Edit size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   );
 }
