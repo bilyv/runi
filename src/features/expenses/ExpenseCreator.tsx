@@ -8,7 +8,6 @@ export function ExpenseCreator() {
   const [categoryId, setCategoryId] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [addedBy, setAddedBy] = useState("");
   const [status, setStatus] = useState("pending");
   const [error, setError] = useState("");
 
@@ -25,7 +24,6 @@ export function ExpenseCreator() {
         categoryId: categoryId as Id<"expensecategory">,
         amount: parseFloat(amount),
         date: new Date(date).getTime(),
-        addedBy,
         status,
       });
 
@@ -34,7 +32,6 @@ export function ExpenseCreator() {
       setCategoryId("");
       setAmount("");
       setDate(new Date().toISOString().split('T')[0]);
-      setAddedBy("");
       setStatus("pending");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -125,21 +122,6 @@ export function ExpenseCreator() {
         </div>
         
         <div>
-          <label htmlFor="addedBy" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Added By
-          </label>
-          <input
-            type="text"
-            id="addedBy"
-            value={addedBy}
-            onChange={(e) => setAddedBy(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text"
-            placeholder="e.g., John Doe"
-            required
-          />
-        </div>
-        
-        <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
           </label>
@@ -150,8 +132,7 @@ export function ExpenseCreator() {
             className="w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text"
           >
             <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
+            <option value="paid">Paid</option>
           </select>
         </div>
         

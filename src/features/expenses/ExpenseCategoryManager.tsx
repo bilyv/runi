@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+import { Modal } from "../../components/ui/Modal";
 
 export function ExpenseCategoryManager() {
   const [name, setName] = useState("");
   const [budget, setBudget] = useState("");
   const [editingId, setEditingId] = useState<Id<"expensecategory"> | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
 
   const categories = useQuery(api.expenseCategories.list);
@@ -31,6 +33,7 @@ export function ExpenseCategoryManager() {
           name,
           budget: budget ? parseFloat(budget) : undefined,
         });
+        setIsModalOpen(false);
       }
       setName("");
       setBudget("");
@@ -39,10 +42,22 @@ export function ExpenseCategoryManager() {
     }
   };
 
-  const handleEdit = (category: any) => {
+  const openCreateModal = () => {
+    setName("");
+    setBudget("");
+    setEditingId(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (category: any) => {
     setName(category.name);
     setBudget(category.budget || "");
     setEditingId(category._id);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (category: any) => {
+    openEditModal(category);
   };
 
   const handleDelete = async (id: Id<"expensecategory">) => {
@@ -65,11 +80,23 @@ export function ExpenseCategoryManager() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-dark-card rounded-lg border border-gray-200 dark:border-dark-border p-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text mb-4">
-          {editingId ? "Edit Category" : "Add New Category"}
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-dark-text">
+          Expense Categories
         </h2>
-        
+        <button
+          onClick={openCreateModal}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Create Category
+        </button>
+      </div>
+      
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        title={editingId ? "Edit Category" : "Create Category"}
+      >
         {error && (
           <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg">
             {error}
@@ -108,26 +135,23 @@ export function ExpenseCategoryManager() {
             />
           </div>
           
-          <div className="flex space-x-3">
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-dark-card dark:text-dark-text dark:border-dark-border dark:hover:bg-dark-bg"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {editingId ? "Update Category" : "Add Category"}
+              {editingId ? "Update Category" : "Create Category"}
             </button>
-            
-            {editingId && (
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-dark-card dark:text-dark-text dark:border-dark-border dark:hover:bg-dark-bg"
-              >
-                Cancel
-              </button>
-            )}
           </div>
         </form>
-      </div>
+      </Modal>
       
       <div className="bg-white dark:bg-dark-card rounded-lg border border-gray-200 dark:border-dark-border">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-dark-border">

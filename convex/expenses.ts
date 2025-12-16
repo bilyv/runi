@@ -48,7 +48,7 @@ export const create = mutation({
     categoryId: v.id("expensecategory"),
     amount: v.number(),
     date: v.number(),
-    addedBy: v.string(),
+    addedBy: v.optional(v.string()),
     status: v.string(),
   },
   handler: async (ctx, args) => {
@@ -62,7 +62,7 @@ export const create = mutation({
       categoryId: args.categoryId,
       amount: args.amount,
       date: args.date,
-      addedBy: args.addedBy,
+      addedBy: args.addedBy || "System",
       status: args.status,
       updatedAt: now,
     });
