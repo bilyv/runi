@@ -707,95 +707,132 @@ export function ProductAdding({}: ProductAddingProps) {
         onClose={() => setIsRestockOpen(false)} 
         title="Restock Product"
       >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Product
-            </label>
-            <select
-              value={restockForm.product_id}
-              onChange={(e) => handleRestockChange('product_id', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-            >
-              <option value="">Select a product</option>
-              {products.map(product => (
-                <option key={product._id} value={product._id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
-            {errors.product_id && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.product_id}</p>
-            )}
-          </div>
-          
-          <Input
-            label="Boxes Amount"
-            type="number"
-            value={restockForm.boxes_amount}
-            onChange={(e) => handleRestockChange('boxes_amount', e.target.value)}
-            error={errors.boxes_amount}
-            placeholder="Enter number of boxes"
-          />
-          
-          <Input
-            label="Kg Amount"
-            type="number"
-            value={restockForm.kg_amount}
-            onChange={(e) => handleRestockChange('kg_amount', e.target.value)}
-            error={errors.kg_amount}
-            placeholder="Enter kg amount"
-          />
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Delivery Date
-            </label>
-            <input
-              type="date"
-              value={restockForm.delivery_date}
-              onChange={(e) => handleRestockChange('delivery_date', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.delivery_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-            />
-            {errors.delivery_date && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.delivery_date}</p>
-            )}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Expiry Date
-            </label>
-            <input
-              type="date"
-              value={restockForm.expiry_date}
-              onChange={(e) => handleRestockChange('expiry_date', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-            />
-            {errors.expiry_date && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.expiry_date}</p>
-            )}
-          </div>
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <Button 
-              variant="secondary" 
-              onClick={() => setIsRestockOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleRestockSubmit}
-            >
-              Record Restock
-            </Button>
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
+            {/* Header */}
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Restock Product</h2>
+            </div>
+            
+            {/* Restock Form */}
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    Product <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={restockForm.product_id}
+                    onChange={(e) => handleRestockChange('product_id', e.target.value)}
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                    }`}
+                  >
+                    <option value="">Select a product</option>
+                    {products.map(product => (
+                      <option key={product._id} value={product._id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.product_id && (
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Boxes Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={restockForm.boxes_amount}
+                      onChange={(e) => handleRestockChange('boxes_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Boxes"
+                    />
+                    {errors.boxes_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Kg Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={restockForm.kg_amount}
+                      onChange={(e) => handleRestockChange('kg_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Kg"
+                    />
+                    {errors.kg_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Delivery Date
+                    </label>
+                    <input
+                      type="date"
+                      value={restockForm.delivery_date}
+                      onChange={(e) => handleRestockChange('delivery_date', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.delivery_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                    />
+                    {errors.delivery_date && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.delivery_date}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Expiry Date
+                    </label>
+                    <input
+                      type="date"
+                      value={restockForm.expiry_date}
+                      onChange={(e) => handleRestockChange('expiry_date', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                    />
+                    {errors.expiry_date && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.expiry_date}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-2 pt-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => setIsRestockOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="primary" 
+                size="sm"
+                onClick={handleRestockSubmit}
+              >
+                Record Restock
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>
@@ -806,79 +843,114 @@ export function ProductAdding({}: ProductAddingProps) {
         onClose={() => setIsRecordDamagedOpen(false)} 
         title="Record Damaged Product"
       >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Product
-            </label>
-            <select
-              value={recordDamagedForm.product_id}
-              onChange={(e) => handleRecordDamagedChange('product_id', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-            >
-              <option value="">Select a product</option>
-              {products.map(product => (
-                <option key={product._id} value={product._id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
-            {errors.product_id && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.product_id}</p>
-            )}
-          </div>
-          
-          <Input
-            label="Boxes Amount"
-            type="number"
-            value={recordDamagedForm.boxes_amount}
-            onChange={(e) => handleRecordDamagedChange('boxes_amount', e.target.value)}
-            error={errors.boxes_amount}
-            placeholder="Enter number of boxes"
-          />
-          
-          <Input
-            label="Kg Amount"
-            type="number"
-            value={recordDamagedForm.kg_amount}
-            onChange={(e) => handleRecordDamagedChange('kg_amount', e.target.value)}
-            error={errors.kg_amount}
-            placeholder="Enter kg amount"
-          />
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Reason
-            </label>
-            <textarea
-              value={recordDamagedForm.reason}
-              onChange={(e) => handleRecordDamagedChange('reason', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-              rows={3}
-              placeholder="Describe the damage reason"
-            />
-            {errors.reason && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.reason}</p>
-            )}
-          </div>
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <Button 
-              variant="secondary" 
-              onClick={() => setIsRecordDamagedOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleRecordDamagedSubmit}
-            >
-              Record Damage
-            </Button>
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
+            {/* Header */}
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Record Damaged Product</h2>
+            </div>
+            
+            {/* Record Damaged Form */}
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    Product <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={recordDamagedForm.product_id}
+                    onChange={(e) => handleRecordDamagedChange('product_id', e.target.value)}
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                    }`}
+                  >
+                    <option value="">Select a product</option>
+                    {products.map(product => (
+                      <option key={product._id} value={product._id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.product_id && (
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Boxes Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={recordDamagedForm.boxes_amount}
+                      onChange={(e) => handleRecordDamagedChange('boxes_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Boxes"
+                    />
+                    {errors.boxes_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Kg Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={recordDamagedForm.kg_amount}
+                      onChange={(e) => handleRecordDamagedChange('kg_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Kg"
+                    />
+                    {errors.kg_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    Reason <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={recordDamagedForm.reason}
+                    onChange={(e) => handleRecordDamagedChange('reason', e.target.value)}
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                      errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                    }`}
+                    rows={3}
+                    placeholder="Describe the damage reason"
+                  />
+                  {errors.reason && (
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.reason}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-2 pt-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => setIsRecordDamagedOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="primary" 
+                size="sm"
+                onClick={handleRecordDamagedSubmit}
+              >
+                Record Damage
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>
@@ -889,79 +961,114 @@ export function ProductAdding({}: ProductAddingProps) {
         onClose={() => setIsStockCorrectionOpen(false)} 
         title="Stock Correction"
       >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Product
-            </label>
-            <select
-              value={stockCorrectionForm.product_id}
-              onChange={(e) => handleStockCorrectionChange('product_id', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-            >
-              <option value="">Select a product</option>
-              {products.map(product => (
-                <option key={product._id} value={product._id}>
-                  {product.name}
-                </option>
-              ))}
-            </select>
-            {errors.product_id && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.product_id}</p>
-            )}
-          </div>
-          
-          <Input
-            label="Boxes Amount"
-            type="number"
-            value={stockCorrectionForm.boxes_amount}
-            onChange={(e) => handleStockCorrectionChange('boxes_amount', e.target.value)}
-            error={errors.boxes_amount}
-            placeholder="Enter number of boxes"
-          />
-          
-          <Input
-            label="Kg Amount"
-            type="number"
-            value={stockCorrectionForm.kg_amount}
-            onChange={(e) => handleStockCorrectionChange('kg_amount', e.target.value)}
-            error={errors.kg_amount}
-            placeholder="Enter kg amount"
-          />
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-              Reason
-            </label>
-            <textarea
-              value={stockCorrectionForm.reason}
-              onChange={(e) => handleStockCorrectionChange('reason', e.target.value)}
-              className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text transition-colors ${
-                errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-              }`}
-              rows={3}
-              placeholder="Explain the reason for stock correction"
-            />
-            {errors.reason && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.reason}</p>
-            )}
-          </div>
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <Button 
-              variant="secondary" 
-              onClick={() => setIsStockCorrectionOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleStockCorrectionSubmit}
-            >
-              Apply Correction
-            </Button>
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
+            {/* Header */}
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Stock Correction</h2>
+            </div>
+            
+            {/* Stock Correction Form */}
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    Product <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={stockCorrectionForm.product_id}
+                    onChange={(e) => handleStockCorrectionChange('product_id', e.target.value)}
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                    }`}
+                  >
+                    <option value="">Select a product</option>
+                    {products.map(product => (
+                      <option key={product._id} value={product._id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.product_id && (
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Boxes Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={stockCorrectionForm.boxes_amount}
+                      onChange={(e) => handleStockCorrectionChange('boxes_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Boxes"
+                    />
+                    {errors.boxes_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Kg Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={stockCorrectionForm.kg_amount}
+                      onChange={(e) => handleStockCorrectionChange('kg_amount', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Kg"
+                    />
+                    {errors.kg_amount && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    Reason <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={stockCorrectionForm.reason}
+                    onChange={(e) => handleStockCorrectionChange('reason', e.target.value)}
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                      errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                    }`}
+                    rows={3}
+                    placeholder="Explain the reason for stock correction"
+                  />
+                  {errors.reason && (
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.reason}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-2 pt-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={() => setIsStockCorrectionOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="primary" 
+                size="sm"
+                onClick={handleStockCorrectionSubmit}
+              >
+                Apply Correction
+              </Button>
+            </div>
           </div>
         </div>
       </Modal>

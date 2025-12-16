@@ -67,38 +67,57 @@ export function AddCategoryModal({ isOpen, onClose, category }: AddCategoryModal
             onClose={handleClose}
             title={category ? "Edit Category" : "Add Category"}
         >
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                    label="Category Name"
-                    value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                    placeholder="Enter category name"
-                    required
-                    disabled={isSubmitting}
-                />
-
-                <div className="flex gap-3 pt-4">
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        className="flex-1"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting
-                            ? (category ? "Updating..." : "Creating...")
-                            : (category ? "Update Category" : "Create Category")
-                        }
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={handleClose}
-                        disabled={isSubmitting}
-                    >
-                        Cancel
-                    </Button>
+            <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
+                <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
+                    {/* Header */}
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">
+                            {category ? "Edit Category" : "Add Category"}
+                        </h2>
+                    </div>
+                    
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                                    Category Name <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={categoryName}
+                                    onChange={(e) => setCategoryName(e.target.value)}
+                                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors"
+                                    placeholder="Enter category name"
+                                    disabled={isSubmitting}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                onClick={handleClose}
+                                disabled={isSubmitting}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                size="sm"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting
+                                    ? (category ? "Updating..." : "Creating...")
+                                    : (category ? "Update Category" : "Create Category")
+                                }
+                            </Button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </Modal>
     );
 }
