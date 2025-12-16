@@ -180,3 +180,49 @@ export const restock = mutation({
     return args.id;
   },
 });
+
+// Record stock addition
+export const recordStockAddition = mutation({
+  args: {
+    addition_id: v.string(),
+    product_id: v.id("products"),
+    boxes_added: v.number(),
+    kg_added: v.number(),
+    total_cost: v.number(),
+    delivery_date: v.string(),
+    status: v.string(),
+    performed_by: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    return await ctx.db.insert("stock_additions", {
+      ...args,
+      user_id: userId,
+      updated_at: Date.now(),
+    });
+  },
+});
+
+// Record stock correction
+export const recordStockCorrection = mutation({
+  args: {
+    correction_id: v.string(),
+    product_id: v.id("products"),
+    box_adjustment: v.number(),
+    kg_adjustment: v.number(),
+    status: v.string(),
+    performed_by: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    return await ctx.db.insert("stock_corrections", {
+      ...args,
+      user_id: userId,
+      updated_at: Date.now(),
+    });
+  },
+});

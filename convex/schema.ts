@@ -57,6 +57,36 @@ const applicationTables = {
     .index("by_user_and_name", ["user_id", "category_name"]),
 
 
+  // Stock Additions
+  stock_additions: defineTable({
+    addition_id: v.string(),
+    product_id: v.id("products"),
+    user_id: v.id("users"),
+    boxes_added: v.number(),
+    kg_added: v.number(),
+    total_cost: v.number(),
+    delivery_date: v.string(),
+    status: v.string(),
+    performed_by: v.string(),
+    updated_at: v.number(),
+  })
+    .index("by_product", ["product_id"])
+    .index("by_user", ["user_id"]),
+
+  // Stock Corrections
+  stock_corrections: defineTable({
+    correction_id: v.string(),
+    user_id: v.id("users"),
+    product_id: v.id("products"),
+    box_adjustment: v.number(),
+    kg_adjustment: v.number(),
+    status: v.string(),
+    performed_by: v.string(),
+    updated_at: v.number(),
+  })
+    .index("by_product", ["product_id"])
+    .index("by_user", ["user_id"]),
+
 
   // Sales
   sales: defineTable({
