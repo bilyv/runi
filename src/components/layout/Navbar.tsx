@@ -3,6 +3,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../ThemeProvider";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { AnimatedTimeDisplay } from "./AnimatedTimeDisplay";
 
 export function Navbar() {
     const { theme, toggleTheme } = useTheme();
@@ -11,7 +12,7 @@ export function Navbar() {
     return (
         <div className="h-16 px-4 md:px-6 flex items-center justify-between bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border sticky top-0 z-10">
             <div className="flex items-center gap-4">
-                {/* Application name - removed as requested */}
+                <AnimatedTimeDisplay />
             </div>
 
             <div className="flex items-center gap-2">
