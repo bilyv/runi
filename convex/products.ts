@@ -253,3 +253,32 @@ export const recordDamagedProduct = mutation({
     });
   },
 });
+
+// Record stock movement
+export const recordStockMovement = mutation({
+  args: {
+    movement_id: v.string(),
+    product_id: v.id("products"),
+    movement_type: v.string(),
+    box_change: v.number(),
+    kg_change: v.number(),
+    old_value: v.number(),
+    new_value: v.number(),
+    damaged_id: v.optional(v.id("damaged_products")),
+    stock_addition_id: v.optional(v.id("stock_additions")),
+    correction_id: v.optional(v.id("stock_corrections")),
+    reason: v.string(),
+    status: v.string(),
+    performed: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    return await ctx.db.insert("stock_movements", {
+      ...args,
+      user_id: userId,
+      updated_at: Date.now(),
+    });
+  },
+});
