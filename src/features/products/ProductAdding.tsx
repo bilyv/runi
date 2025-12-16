@@ -443,45 +443,42 @@ export function ProductAdding({}: ProductAddingProps) {
         onClose={() => setIsAddProductOpen(false)} 
         title="Add New Product"
       >
-        <div className="max-w-2xl mx-auto bg-white dark:bg-dark-card rounded-xl shadow-lg overflow-hidden">
-          <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
             {/* Header */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text">Add New Product</h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Fill in the product details below to add a new item to your inventory</p>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Add New Product</h2>
             </div>
             
-            {/* Basic Information */}
+            {/* Product Details Form */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text border-b border-gray-200 dark:border-dark-border pb-2">Basic Information</h3>
-              
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
                     Product Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={addProductForm.name}
                     onChange={(e) => handleAddProductChange('name', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
                       errors.name ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
                     }`}
                     placeholder="Enter product name"
                   />
                   {errors.name && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.name}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
                     Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={addProductForm.category_id}
                     onChange={(e) => handleAddProductChange('category_id', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
                       errors.category_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
                     }`}
                   >
@@ -493,211 +490,208 @@ export function ProductAdding({}: ProductAddingProps) {
                     ))}
                   </select>
                   {errors.category_id && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category_id}</p>
+                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.category_id}</p>
                   )}
                 </div>
               </div>
-            </div>
-            
-            {/* Quantity & Measurement */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text border-b border-gray-200 dark:border-dark-border pb-2">Quantity & Measurement</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Boxed Quantity
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.quantity_box}
-                    onChange={(e) => handleAddProductChange('quantity_box', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.quantity_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter number of boxes"
-                  />
-                  {errors.quantity_box && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.quantity_box}</p>
-                  )}
-                </div>
+              {/* Quantity & Measurement */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Quantity & Measurement</h3>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Box to Kg <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.box_to_kg_ratio}
-                    onChange={(e) => handleAddProductChange('box_to_kg_ratio', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.box_to_kg_ratio ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter conversion ratio"
-                  />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Conversion ratio from box to kg</p>
-                  {errors.box_to_kg_ratio && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.box_to_kg_ratio}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Weight (kg)
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.weight}
-                    onChange={(e) => handleAddProductChange('weight', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.weight ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter weight in kg"
-                  />
-                  {errors.weight && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.weight}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            {/* Cost Pricing */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text border-b border-gray-200 dark:border-dark-border pb-2">Cost Pricing</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Cost per Box ($) <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.cost_per_box}
-                    onChange={(e) => handleAddProductChange('cost_per_box', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.cost_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter cost per box"
-                  />
-                  {errors.cost_per_box && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.cost_per_box}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Cost per Kg ($)
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Boxed Qty
+                    </label>
                     <input
                       type="number"
-                      value={addProductForm.cost_per_box && addProductForm.box_to_kg_ratio ? 
-                        (Number(addProductForm.cost_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
-                      readOnly
-                      className="w-full pl-8 px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
-                      placeholder="Calculated automatically"
+                      value={addProductForm.quantity_box}
+                      onChange={(e) => handleAddProductChange('quantity_box', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.quantity_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Boxes"
                     />
+                    {errors.quantity_box && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.quantity_box}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Box to Kg <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={addProductForm.box_to_kg_ratio}
+                      onChange={(e) => handleAddProductChange('box_to_kg_ratio', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.box_to_kg_ratio ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Ratio"
+                    />
+                    {errors.box_to_kg_ratio && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.box_to_kg_ratio}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Weight (kg)
+                    </label>
+                    <input
+                      type="number"
+                      value={addProductForm.weight}
+                      onChange={(e) => handleAddProductChange('weight', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.weight ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Kg"
+                    />
+                    {errors.weight && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.weight}</p>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Selling Pricing */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text border-b border-gray-200 dark:border-dark-border pb-2">Selling Pricing</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Sell per Box ($) <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.sell_price_per_box}
-                    onChange={(e) => handleAddProductChange('sell_price_per_box', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.sell_price_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter sell price per box"
-                  />
-                  {errors.sell_price_per_box && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.sell_price_per_box}</p>
-                  )}
-                </div>
+              {/* Cost Pricing */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Cost Pricing</h3>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Sell per Kg ($)
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Cost per Box ($) <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="number"
-                      value={addProductForm.sell_price_per_box && addProductForm.box_to_kg_ratio ? 
-                        (Number(addProductForm.sell_price_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
-                      readOnly
-                      className="w-full pl-8 px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
-                      placeholder="Calculated automatically"
+                      value={addProductForm.cost_per_box}
+                      onChange={(e) => handleAddProductChange('cost_per_box', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.cost_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="$0.00"
                     />
+                    {errors.cost_per_box && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.cost_per_box}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Cost per Kg ($)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">$</span>
+                      <input
+                        type="number"
+                        value={addProductForm.cost_per_box && addProductForm.box_to_kg_ratio ? 
+                          (Number(addProductForm.cost_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
+                        readOnly
+                        className="w-full pl-5 px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
+                        placeholder="Auto"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Stock & Expiry */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text border-b border-gray-200 dark:border-dark-border pb-2">Stock & Expiry</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Low Stock Alert
-                  </label>
-                  <input
-                    type="number"
-                    value={addProductForm.low_stock_alert}
-                    onChange={(e) => handleAddProductChange('low_stock_alert', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.low_stock_alert ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter low stock threshold"
-                  />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Alert when stock falls below this level</p>
-                  {errors.low_stock_alert && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.low_stock_alert}</p>
-                  )}
-                </div>
+              {/* Selling Pricing */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Selling Pricing</h3>
                 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Expiry Date <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={addProductForm.expiry_date}
-                    onChange={(e) => handleAddProductChange('expiry_date', e.target.value)}
-                    className={`w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                  />
-                  {errors.expiry_date && (
-                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.expiry_date}</p>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Sell per Box ($) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={addProductForm.sell_price_per_box}
+                      onChange={(e) => handleAddProductChange('sell_price_per_box', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.sell_price_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="$0.00"
+                    />
+                    {errors.sell_price_per_box && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.sell_price_per_box}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Sell per Kg ($)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">$</span>
+                      <input
+                        type="number"
+                        value={addProductForm.sell_price_per_box && addProductForm.box_to_kg_ratio ? 
+                          (Number(addProductForm.sell_price_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
+                        readOnly
+                        className="w-full pl-5 px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
+                        placeholder="Auto"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Stock & Expiry */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Stock & Expiry</h3>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Low Stock Alert
+                    </label>
+                    <input
+                      type="number"
+                      value={addProductForm.low_stock_alert}
+                      onChange={(e) => handleAddProductChange('low_stock_alert', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.low_stock_alert ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                      placeholder="Threshold"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                      Expiry Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={addProductForm.expiry_date}
+                      onChange={(e) => handleAddProductChange('expiry_date', e.target.value)}
+                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
+                        errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
+                      }`}
+                    />
+                    {errors.expiry_date && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.expiry_date}</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
             
             {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4">
+            <div className="flex justify-end gap-2 pt-2">
               <Button 
                 variant="secondary" 
+                size="sm"
                 onClick={() => setIsAddProductOpen(false)}
               >
                 Cancel
               </Button>
               <Button 
                 variant="primary" 
+                size="sm"
                 onClick={handleAddProductSubmit}
               >
                 Save Product
