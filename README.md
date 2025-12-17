@@ -69,7 +69,10 @@ Runi is a comprehensive business management application built with modern web te
 │   │   ├── products/         # Product Management
 │   │   │   └── Products.tsx
 │   │   ├── sales/            # Sales & Orders
-│   │   │   └── Sales.tsx
+│   │   │   ├── AddSale.tsx           # Add new sales component
+│   │   │   ├── ManageSales.tsx       # Manage existing sales component
+│   │   │   ├── AuditSales.tsx        # Audit sales transactions component
+│   │   │   └── Sales.tsx             # Main sales component with tab navigation
 │   │   ├── expenses/         # Expense Tracking
 │   │   │   └── Expenses.tsx
 │   │   ├── documents/        # File Management
@@ -95,6 +98,71 @@ Runi is a comprehensive business management application built with modern web te
 ├── package.json              # Dependencies & Scripts
 └── tsconfig.json             # TypeScript Configuration
 ```
+
+### 🗄️ Database Schema
+
+The application uses Convex as its backend database with the following key tables:
+
+**Core Business Tables:**
+- `users` - User accounts and profiles
+- `products` - Product inventory with box/kg tracking
+- `productcategory` - Product categories
+- `sales` - Sales transactions with detailed tracking
+- `sales_audit` - Audit trail for sales transactions
+- `expenses` - Business expenses with categorization
+- `expensecategory` - Expense categories
+- `documents` - File storage metadata
+- `folders` - Document organization
+- `files` - Individual file records
+
+**Tracking & Monitoring Tables:**
+- `stock_additions` - New inventory additions
+- `stock_corrections` - Inventory adjustments
+- `damaged_products` - Damaged inventory tracking
+- `stock_movements` - All inventory movements
+
+#### Sales Table Structure
+
+The `sales` table contains the following fields:
+- `sales_id` - Unique identifier for the sale
+- `user_id` - Reference to the user who owns this record
+- `product_id` - Reference to the product being sold
+- `boxes_quantity` - Number of boxes sold
+- `kg_quantity` - Weight in kilograms sold
+- `box_price` - Price per box
+- `kg_price` - Price per kilogram
+- `profit_per_box` - Profit margin per box
+- `profit_per_kg` - Profit margin per kilogram
+- `total_amount` - Total sale value
+- `amount_paid` - Amount already paid by customer
+- `remaining_amount` - Outstanding balance
+- `payment_status` - Current payment status (pending/partial/completed)
+- `payment_method` - Method of payment used
+- `performed_by` - User who executed the sale
+- `client_id` - Reference to the customer
+- `client_name` - Customer name
+- `phone_number` - Customer contact number
+- `updated_at` - Timestamp of last modification
+
+#### Sales Audit Table Structure
+
+The `sales_audit` table tracks all changes to sales records:
+- `audit_id` - Unique identifier for the audit record
+- `user_id` - Reference to the user who owns this record
+- `sales_id` - Reference to the sales record being audited
+- `audit_type` - Type of change (insert/update/delete)
+- `boxes_change` - Changes to box quantities (before/after values)
+- `kg_change` - Changes to kg quantities (before/after values)
+- `old_values` - Complete previous state of the record
+- `new_values` - Complete new state of the record
+- `performed_by` - User who made the change
+- `approval_status` - Current approval status (pending/approved/rejected)
+- `approved_by` - User who approved the change (if applicable)
+- `approved_timestamp` - When the change was approved (if applicable)
+- `reason` - Explanation for the audit action
+- `updated_at` - Timestamp of the audit record creation
+
+Each table is designed with appropriate indexes for optimal query performance and includes timestamp fields for audit trails.
 
 ## ⚡ Getting Started
 
