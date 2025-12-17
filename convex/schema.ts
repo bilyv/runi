@@ -181,19 +181,37 @@ const applicationTables = {
     type: v.string(),
     size: v.number(),
     storageId: v.id("_storage"),
-    folderId: v.optional(v.id("folders")),
+    folder_id: v.optional(v.id("folders")),
     tags: v.array(v.string()),
     uploadedBy: v.id("users"),
   })
-    .index("by_folder", ["folderId"])
+    .index("by_folder", ["folder_id"])
     .index("by_type", ["type"]),
 
+  // Folders table
   folders: defineTable({
-    name: v.string(),
-    parentId: v.optional(v.id("folders")),
-    createdBy: v.id("users"),
+    folder_id: v.string(),
+    user_id: v.id("users"),
+    folder_name: v.string(),
+    file_count: v.number(),
+    total_size: v.number(),
+    updated_at: v.number(),
   })
-    .index("by_parent", ["parentId"]),
+    .index("by_user", ["user_id"]),
+
+  // Files table
+  files: defineTable({
+    file_id: v.string(),
+    user_id: v.id("users"),
+    file_name: v.string(),
+    file_url: v.string(),
+    file_type: v.string(),
+    folder_id: v.optional(v.id("folders")),
+    file_size: v.number(),
+    updated_at: v.number(),
+  })
+    .index("by_user", ["user_id"])
+    .index("by_folder", ["folder_id"]),
 
   // Settings
   settings: defineTable({
