@@ -93,6 +93,22 @@ export const addPayment = mutation({
   },
 });
 
+export const deleteSale = mutation({
+  args: { id: v.id("sales") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const sale = await ctx.db.get(args.id);
+    if (!sale || sale.user_id !== userId) {
+      throw new Error("Sale not found or access denied");
+    }
+
+    await ctx.db.delete(args.id);
+    return args.id;
+  },
+});
+
 export const getStats = query({
   args: {
     period: v.union(v.literal("daily"), v.literal("weekly"), v.literal("monthly")),
