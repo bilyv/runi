@@ -82,7 +82,7 @@ export function BusinessDashboard() {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col overflow-auto md:ml-0">
-        <Navbar />
+        <Navbar onMenuClick={() => setSidebarOpen(true)} />
         <div className="flex-1 overflow-auto">
           {renderModule()}
         </div>
