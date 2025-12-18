@@ -56,7 +56,7 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const initials = getInitials(fullName);
 
     return (
-        <div className="h-16 px-4 md:px-6 flex items-center justify-between bg-white/80 dark:bg-dark-card/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border sticky top-0 z-10">
+        <div className="h-16 px-4 md:px-6 flex items-center justify-between bg-white/40 dark:bg-dark-card/40 backdrop-blur-md border-b border-gray-200 dark:border-dark-border sticky top-0 z-10">
             <div className="flex items-center gap-4">
                 <button 
                     onClick={onMenuClick}

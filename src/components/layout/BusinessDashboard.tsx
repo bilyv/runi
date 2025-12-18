@@ -85,7 +85,7 @@ export function BusinessDashboard() {
 
   // Bottom navigation items for mobile
   const bottomNavItems = [
-    { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+    { id: "dashboard", label: "Home", icon: BarChart3 },
     { id: "products", label: "Products", icon: Package },
     { id: "expenses", label: "Expenses", icon: Receipt },
     { id: "documents", label: "Documents", icon: FileText },

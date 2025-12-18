@@ -189,7 +189,7 @@ export function Dashboard() {
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-white">
         <h1 className="text-2xl font-bold">Hello {currentUser?.fullName || currentUser?.name || "there"} 👋</h1>
-        <p className="text-blue-100 mt-1">Welcome back to your dashboard overview</p>
+        <p className="text-blue-100 mt-1">Welcome back to your home overview</p>
       </div>
 
       {/* Stats Cards - Desktop Grid */}
