@@ -15,7 +15,17 @@ Runi is a comprehensive business management application built with modern web te
 - **Transactions**: Financial history and transaction logs.
 - **Authentication**: Secure sign-in and session management via Convex Auth.
 
-## 🛠️ Tech Stack
+## 🔗 Routing
+
+The application implements full client-side routing for direct access to all modules:
+
+- **Direct URL Access**: Each module can be accessed directly via its URL (e.g., `/dashboard`, `/products`, `/sales`)
+- **Persistent Navigation**: Refreshing the page maintains the current module view
+- **Browser History**: Back/forward navigation works seamlessly between modules
+- **Dynamic Parameters**: Module selection is managed through URL parameters
+- **Fallback Handling**: Invalid URLs automatically redirect to the dashboard
+
+### 🛠️ Tech Stack
 
 ### Frontend
 - **Framework**: [React 19](https://react.dev/) with TypeScript
@@ -25,7 +35,7 @@ Runi is a comprehensive business management application built with modern web te
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
 - **State Management**: React Context API and useState/useReducer hooks
-- **Routing**: React Router DOM
+- **Routing**: React Router DOM (fully implemented for direct URL access to all modules)
 
 ### Backend & Database
 - **Platform**: [Convex](https://convex.dev/)
@@ -69,7 +79,7 @@ Runi is a comprehensive business management application built with modern web te
 ├── src/                      # Frontend Application
 │   ├── components/           # Shared UI Components
 │   │   ├── layout/           # Layout Components
-│   │   │   ├── BusinessDashboard.tsx  # Main dashboard layout wrapper
+│   │   │   ├── BusinessDashboard.tsx  # Main dashboard layout wrapper with routing integration
 │   │   │   ├── Navbar.tsx             # Top navigation bar
 │   │   │   └── Sidebar.tsx            # Side navigation menu
 │   │   ├── ui/               # Generic UI Elements
@@ -110,8 +120,8 @@ Runi is a comprehensive business management application built with modern web te
 │   ├── lib/                  # Utilities
 │   │   └── utils.ts          # Helper functions (Tailwind merge, etc.)
 │   │
-│   ├── App.tsx               # Main App Component & Routing
-│   ├── main.tsx              # React Entry Point
+│   ├── App.tsx               # Main App Component with Route Definitions
+│   ├── main.tsx              # React Entry Point with BrowserRouter
 │   └── index.css             # Global Styles & Tailwind Directives
 │
 ├── public/                   # Static Assets
@@ -185,6 +195,18 @@ The `sales_audit` table tracks all changes to sales records:
 
 Each table is designed with appropriate indexes for optimal query performance and includes timestamp fields for audit trails.
 
+## 🔄 Routing Implementation
+
+The application now features a complete client-side routing system that enables direct URL access to all modules:
+
+1. **BrowserRouter Integration**: The main application is wrapped with React Router's BrowserRouter in `main.tsx`
+2. **Route Configuration**: Dynamic routes are configured in `App.tsx` to handle module parameters
+3. **Parameter-Based Navigation**: The `BusinessDashboard.tsx` component uses `useParams` to read URL parameters and `useNavigate` for programmatic navigation
+4. **Validation & Fallback**: Invalid module URLs are automatically redirected to the dashboard
+5. **State Synchronization**: URL changes are synchronized with application state for consistent UI
+
+This implementation ensures users can bookmark, share, and directly access any module while maintaining the existing application functionality.
+
 ## ⚡ Getting Started
 
 ### Prerequisites
@@ -238,8 +260,8 @@ npm run build
 
 ## 📜 Scripts
 
-- `npm run dev`: Starts both frontend and backend in development mode.
-- `npm run dev:frontend`: Starts only the Vite frontend server.
+- `npm run dev`: Starts both frontend and backend in development mode with proper routing.
+- `npm run dev:frontend`: Starts only the Vite frontend server with routing enabled.
 - `npm run dev:backend`: Starts only the Convex backend server.
 - `npm run build`: Builds the project for production.
 - `npm run lint`: Runs type checking and linting.
