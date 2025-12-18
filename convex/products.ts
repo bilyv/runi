@@ -541,6 +541,7 @@ export const recordStockMovement = mutation({
     movement_id: v.string(),
     product_id: v.id("products"),
     movement_type: v.string(),
+    field_changed: v.optional(v.string()),
     box_change: v.number(),
     kg_change: v.number(),
     old_value: v.number(),
