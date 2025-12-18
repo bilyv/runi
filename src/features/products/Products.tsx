@@ -35,7 +35,15 @@ export function Products() {
       await deleteCategory({ id: categoryId });
       toast.success("Category deleted successfully");
     } catch (error: any) {
-      toast.error(error.message || "Failed to delete category");
+      // Show user-friendly error message for categories with products
+      if (error.message && error.message.includes("Cannot delete category that has products")) {
+        toast.error("Cannot delete category that has products. Please move or delete all products in this category first.");
+      } else if (error.message && error.message.includes("[CONVEX M")) {
+        // Hide raw Convex error messages
+        toast.error("CANNOT DELETE THE CATEGORY WITH PRODUCTS IN.");
+      } else {
+        toast.error(error.message || "Failed to delete category");
+      }
     }
   };
 

@@ -104,6 +104,18 @@ export const remove = mutation({
             throw new Error("Unauthorized");
         }
 
+        // Check if there are any products associated with this category
+        const productsInCategory = await ctx.db
+            .query("products")
+            .withIndex("by_user_and_category", (q) =>
+                q.eq("user_id", userId).eq("category_id", args.id)
+            )
+            .take(1);
+
+        if (productsInCategory.length > 0) {
+            throw new Error("Cannot delete category that has products. Please move or delete all products in this category first.");
+        }
+
         await ctx.db.delete(args.id);
         return args.id;
     },
