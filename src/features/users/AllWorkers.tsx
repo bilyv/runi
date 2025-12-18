@@ -23,7 +23,7 @@ export function AllWorkers() {
 
   useEffect(() => {
     if (workers !== undefined) {
-      setFilteredWorkers(workers);
+      setFilteredWorkers(workers as Worker[]);
       setIsLoading(false);
     }
   }, [workers]);
@@ -32,10 +32,10 @@ export function AllWorkers() {
     if (workers) {
       const filtered = workers.filter(worker =>
         worker.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        worker.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (worker.phone && worker.phone.includes(searchTerm))
+        (worker.email && worker.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (worker.phone && worker.phone.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-      setFilteredWorkers(filtered);
+      setFilteredWorkers(filtered as Worker[]);
     }
   }, [searchTerm, workers]);
 
