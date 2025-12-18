@@ -180,6 +180,7 @@ const applicationTables = {
     approved_by: v.optional(v.id("users")),
     approved_timestamp: v.optional(v.number()),
     reason: v.string(),
+    approval_reason: v.optional(v.string()),
     updated_at: v.number(),
   })
     .index("by_sales", ["sales_id"])

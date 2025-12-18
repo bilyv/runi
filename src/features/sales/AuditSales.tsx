@@ -85,14 +85,43 @@ export function AuditSales() {
                     {audit.audit_type}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="max-w-xs truncate" title={JSON.stringify(audit.boxes_change) + ", " + JSON.stringify(audit.kg_change)}>
-                      Boxes: {audit.boxes_change?.before} → {audit.boxes_change?.after}, 
-                      Kg: {audit.kg_change?.before} → {audit.kg_change?.after}
+                    <div className="max-w-xs">
+                      {audit.audit_type === "quantity_change" && (
+                        <div>
+                          <div>Boxes: {audit.boxes_change?.before} → {audit.boxes_change?.after}</div>
+                          <div>Kg: {audit.kg_change?.before} → {audit.kg_change?.after}</div>
+                        </div>
+                      )}
+                      {audit.audit_type === "payment_method_change" && (
+                        <div>
+                          Payment Method: {audit.old_values?.payment_method} → {audit.new_values?.payment_method}
+                        </div>
+                      )}
+                      {audit.audit_type === "deletion" && (
+                        <div>
+                          <div>Boxes: {audit.boxes_change?.before} (to be deleted)</div>
+                          <div>Kg: {audit.kg_change?.before} (to be deleted)</div>
+                        </div>
+                      )}
+                      {audit.audit_type === "edit" && (
+                        <div>
+                          <div>Boxes: {audit.boxes_change?.before} → {audit.boxes_change?.after}</div>
+                          <div>Kg: {audit.kg_change?.before} → {audit.kg_change?.after}</div>
+                          <div>Payment: {audit.old_values?.payment_method} → {audit.new_values?.payment_method}</div>
+                        </div>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="max-w-xs truncate" title={audit.reason}>
-                      {audit.reason}
+                    <div className="max-w-xs">
+                      <div className="truncate" title={audit.reason}>
+                        {audit.reason}
+                      </div>
+                      {audit.approval_reason && (
+                        <div className="truncate text-xs mt-1 italic" title={`Approval reason: ${audit.approval_reason}`}>
+                          Approved: {audit.approval_reason}
+                        </div>
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

@@ -12,6 +12,7 @@ export function ManageSales() {
   
   // Mutations
   const deleteSale = useMutation(api.sales.deleteSale);
+  const deleteSaleWithAudit = useMutation(api.sales.deleteSaleWithAudit);
   const updateSale = useMutation(api.sales.updateSale);
   
   // State for edit modal
@@ -48,13 +49,19 @@ export function ManageSales() {
   
   // Handle delete sale
   const handleDelete = async (saleId: string) => {
-    if (window.confirm("Are you sure you want to delete this sale?")) {
+    const reason = prompt("Please enter a reason for deleting this sale:");
+    if (!reason) {
+      alert("Deletion cancelled. A reason is required.");
+      return;
+    }
+    
+    if (window.confirm("Are you sure you want to delete this sale? This will create an audit record for approval.")) {
       try {
-        await deleteSale({ id: saleId });
-        alert("Sale deleted successfully!");
+        await deleteSaleWithAudit({ saleId, reason });
+        alert("Sale deletion request submitted for approval!");
       } catch (error) {
-        console.error("Error deleting sale:", error);
-        alert("Failed to delete sale. Please try again.");
+        console.error("Error requesting sale deletion:", error);
+        alert("Failed to request sale deletion. Please try again.");
       }
     }
   };
@@ -321,7 +328,7 @@ export function ManageSales() {
                   type="submit" 
                   variant="primary"
                 >
-                  Save Changes
+                  Submit for Approval
                 </Button>
               </div>
             </div>

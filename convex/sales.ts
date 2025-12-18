@@ -109,6 +109,57 @@ export const deleteSale = mutation({
   },
 });
 
+export const deleteSaleWithAudit = mutation({
+  args: {
+    saleId: v.id("sales"),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const sale = await ctx.db.get(args.saleId);
+    if (!sale || sale.user_id !== userId) {
+      throw new Error("Sale not found or access denied");
+    }
+
+    // Create audit record for deletion
+    const auditRecord = {
+      audit_id: `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      user_id: userId,
+      sales_id: args.saleId,
+      audit_type: "deletion",
+      boxes_change: {
+        before: sale.boxes_quantity,
+        after: null,
+      },
+      kg_change: {
+        before: sale.kg_quantity,
+        after: null,
+      },
+      old_values: {
+        boxes_quantity: sale.boxes_quantity,
+        kg_quantity: sale.kg_quantity,
+        payment_method: sale.payment_method,
+        // Include other relevant sale fields
+        box_price: sale.box_price,
+        kg_price: sale.kg_price,
+        total_amount: sale.total_amount,
+        client_name: sale.client_name,
+      },
+      new_values: null,
+      performed_by: userId,
+      approval_status: "pending" as const,
+      reason: args.reason,
+      updated_at: Date.now(),
+    };
+
+    await ctx.db.insert("sales_audit", auditRecord);
+
+    return args.saleId;
+  },
+});
+
 export const listAudit = query({
   args: {},
   handler: async (ctx) => {
@@ -140,11 +191,38 @@ export const updateAuditStatus = mutation({
       throw new Error("Audit record not found or access denied");
     }
 
+    // If approved, execute the change
+    if (args.status === "approved") {
+      switch (audit.audit_type) {
+        case "quantity_change":
+          // Update the sale with new quantities
+          await ctx.db.patch(audit.sales_id, {
+            boxes_quantity: audit.new_values.boxes_quantity,
+            kg_quantity: audit.new_values.kg_quantity,
+            updated_at: Date.now(),
+          });
+          break;
+        
+        case "payment_method_change":
+          // Update the sale with new payment method
+          await ctx.db.patch(audit.sales_id, {
+            payment_method: audit.new_values.payment_method,
+            updated_at: Date.now(),
+          });
+          break;
+          
+        case "deletion":
+          // Delete the sale record
+          await ctx.db.delete(audit.sales_id);
+          break;
+      }
+    }
+
     return await ctx.db.patch(args.auditId, {
       approval_status: args.status,
       approved_by: userId,
       approved_timestamp: Date.now(),
-      ...(args.reason && { reason: args.reason }),
+      ...(args.reason && { approval_reason: args.reason }),
     });
   },
 });
@@ -166,31 +244,23 @@ export const updateSale = mutation({
       throw new Error("Sale not found or access denied");
     }
 
-    // Prepare update data
-    const updateData: any = {
-      updated_at: Date.now(),
-    };
-
-    // Only update provided fields
-    if (args.boxes_quantity !== undefined) {
-      updateData.boxes_quantity = args.boxes_quantity;
-    }
-    if (args.kg_quantity !== undefined) {
-      updateData.kg_quantity = args.kg_quantity;
-    }
-    if (args.payment_method !== undefined) {
-      updateData.payment_method = args.payment_method;
+    // Determine audit type based on what's being changed
+    let auditType = "edit";
+    if (args.boxes_quantity !== undefined || args.kg_quantity !== undefined) {
+      auditType = "quantity_change";
+    } else if (args.payment_method !== undefined) {
+      auditType = "payment_method_change";
     }
 
-    // Update the sale
-    await ctx.db.patch(args.saleId, updateData);
+    // NOTE: We do NOT update the sale immediately. 
+    // The changes will be applied when the audit is approved.
 
     // Create audit record
     const auditRecord = {
       audit_id: `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       user_id: userId,
       sales_id: args.saleId,
-      audit_type: "edit",
+      audit_type: auditType,
       boxes_change: {
         before: sale.boxes_quantity,
         after: args.boxes_quantity !== undefined ? args.boxes_quantity : sale.boxes_quantity,
