@@ -42,6 +42,8 @@ export function LiveStock({
     const updateProduct = useMutation(api.products.update);
     const deleteProduct = useMutation(api.products.deleteProduct);
     const recordStockMovement = useMutation(api.products.recordStockMovement);
+    const approveProductDeletion = useMutation(api.products.approveProductDeletion);
+    const rejectProductDeletion = useMutation(api.products.rejectProductDeletion);
 
     // Helper to get category name
     const getCategoryName = (categoryId: string) => {
@@ -566,10 +568,16 @@ export function LiveStock({
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
                                 {movement.status === "pending" && (
                                     <>
-                                        <button className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300">
+                                        <button 
+                                            className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300"
+                                            onClick={() => handleApproveDeletion(movement.movement_id, movement.product_id)}
+                                        >
                                             <Check size={16} />
                                         </button>
-                                        <button className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
+                                        <button 
+                                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                                            onClick={() => handleRejectDeletion(movement.movement_id)}
+                                        >
                                             <X size={16} />
                                         </button>
                                     </>
@@ -783,28 +791,25 @@ export function LiveStock({
     const handleDeleteProductSubmit = async () => {
         if (validateDeleteProductForm()) {
             try {
-                // Record the stock movement before deleting
+                // Record the stock movement as a pending deletion request
                 await recordStockMovement({
                     movement_id: `movement_${Date.now()}`,
                     product_id: deletingProduct._id,
-                    movement_type: "product_deletion",
+                    movement_type: "product_delete",
                     box_change: -deletingProduct.quantity_box,
                     kg_change: -deletingProduct.quantity_kg,
                     old_value: deletingProduct.quantity_box,
                     new_value: 0,
                     reason: deleteReason,
-                    status: "completed",
+                    status: "pending",
                     performed: "User", // In a real app, this would be the actual user
                 });
 
-                // Delete the product
-                await deleteProduct({ id: deletingProduct._id });
-                
-                alert("Product deleted successfully!");
+                alert("Product deletion request submitted successfully! Awaiting approval.");
                 closeDeleteModal();
             } catch (error: any) {
-                console.error("Error deleting product:", error);
-                alert("Failed to delete product: " + (error.message || "Unknown error"));
+                console.error("Error submitting deletion request:", error);
+                alert("Failed to submit deletion request: " + (error.message || "Unknown error"));
             }
         }
     };
@@ -812,6 +817,28 @@ export function LiveStock({
     // Handle immediate delete (without reason)
     const handleDeleteClick = (product: any) => {
         openDeleteModal(product);
+    };
+
+    // Handle approval of product deletion
+    const handleApproveDeletion = async (movementId: string, productId: string) => {
+        try {
+            await approveProductDeletion({ movement_id: movementId, product_id: productId });
+            alert("Product deletion approved successfully!");
+        } catch (error: any) {
+            console.error("Error approving deletion:", error);
+            alert("Failed to approve deletion: " + (error.message || "Unknown error"));
+        }
+    };
+
+    // Handle rejection of product deletion
+    const handleRejectDeletion = async (movementId: string) => {
+        try {
+            await rejectProductDeletion({ movement_id: movementId });
+            alert("Product deletion rejected!");
+        } catch (error: any) {
+            console.error("Error rejecting deletion:", error);
+            alert("Failed to reject deletion: " + (error.message || "Unknown error"));
+        }
     };
 
     // Validate edit product form
@@ -1136,7 +1163,7 @@ export function LiveStock({
                         <div>
                             <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Request Product Deletion</h2>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Please provide a reason for deleting this product
+                                Please provide a reason for requesting deletion of this product
                             </p>
                         </div>
                         
@@ -1195,7 +1222,7 @@ export function LiveStock({
                                 size="sm"
                                 onClick={handleDeleteProductSubmit}
                             >
-                                Delete Product
+                                Submit Deletion Request
                             </Button>
                         </div>
                     </div>

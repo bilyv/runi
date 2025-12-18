@@ -231,6 +231,69 @@ export const deleteProduct = mutation({
   },
 });
 
+// Approve product deletion request
+export const approveProductDeletion = mutation({
+  args: { 
+    movement_id: v.string(),
+    product_id: v.id("products") 
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    // Update the stock movement status to completed
+    const movement = await ctx.db.query("stock_movements")
+      .withIndex("by_user", q => q.eq("user_id", userId))
+      .filter(q => q.eq(q.field("movement_id"), args.movement_id))
+      .unique();
+      
+    if (!movement) {
+      throw new Error("Deletion request not found");
+    }
+
+    await ctx.db.patch(movement._id, {
+      status: "completed",
+      updated_at: Date.now(),
+    });
+
+    // Delete the product
+    const product = await ctx.db.get(args.product_id);
+    if (product && product.user_id === userId) {
+      await ctx.db.delete(args.product_id);
+    }
+    
+    return args.product_id;
+  },
+});
+
+// Reject product deletion request
+export const rejectProductDeletion = mutation({
+  args: { 
+    movement_id: v.string()
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    // Update the stock movement status to rejected
+    const movement = await ctx.db.query("stock_movements")
+      .withIndex("by_user", q => q.eq("user_id", userId))
+      .filter(q => q.eq(q.field("movement_id"), args.movement_id))
+      .unique();
+      
+    if (!movement) {
+      throw new Error("Deletion request not found");
+    }
+
+    await ctx.db.patch(movement._id, {
+      status: "rejected",
+      updated_at: Date.now(),
+    });
+    
+    return args.movement_id;
+  },
+});
+
 // Restock a product
 export const restock = mutation({
   args: {
