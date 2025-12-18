@@ -325,28 +325,31 @@ export const approveProductEdit = mutation({
     
     switch (movement.field_changed) {
       case 'name':
-        updateObj.name = movement.new_value.toString();
+        updateObj.name = typeof movement.new_value === 'string' ? movement.new_value : movement.new_value.toString();
         break;
       case 'box_to_kg_ratio':
-        updateObj.box_to_kg_ratio = movement.new_value;
+        // Ensure we're working with numbers
+        const boxToKgRatio = typeof movement.new_value === 'number' ? movement.new_value : parseFloat(movement.new_value as string) || 0;
+        updateObj.box_to_kg_ratio = boxToKgRatio;
         // Recalculate derived values
-        const boxToKgRatio = movement.new_value;
         updateObj.cost_per_kg = product.cost_per_box / boxToKgRatio;
         updateObj.price_per_kg = product.price_per_box / boxToKgRatio;
         updateObj.profit_per_kg = updateObj.price_per_kg - updateObj.cost_per_kg;
         break;
       case 'cost_per_box':
-        updateObj.cost_per_box = movement.new_value;
+        // Ensure we're working with numbers
+        const costPerBox = typeof movement.new_value === 'number' ? movement.new_value : parseFloat(movement.new_value as string) || 0;
+        updateObj.cost_per_box = costPerBox;
         // Recalculate derived values
-        const costPerBox = movement.new_value;
         updateObj.cost_per_kg = costPerBox / product.box_to_kg_ratio;
         updateObj.profit_per_box = product.price_per_box - costPerBox;
         updateObj.profit_per_kg = product.price_per_kg - updateObj.cost_per_kg;
         break;
       case 'price_per_box':
-        updateObj.price_per_box = movement.new_value;
+        // Ensure we're working with numbers
+        const pricePerBox = typeof movement.new_value === 'number' ? movement.new_value : parseFloat(movement.new_value as string) || 0;
+        updateObj.price_per_box = pricePerBox;
         // Recalculate derived values
-        const pricePerBox = movement.new_value;
         updateObj.price_per_kg = pricePerBox / product.box_to_kg_ratio;
         updateObj.profit_per_box = pricePerBox - product.cost_per_box;
         updateObj.profit_per_kg = updateObj.price_per_kg - product.cost_per_kg;
@@ -544,8 +547,8 @@ export const recordStockMovement = mutation({
     field_changed: v.optional(v.string()),
     box_change: v.number(),
     kg_change: v.number(),
-    old_value: v.number(),
-    new_value: v.number(),
+    old_value: v.union(v.number(), v.string()),
+    new_value: v.union(v.number(), v.string()),
     damaged_id: v.optional(v.id("damaged_products")),
     restock_id: v.optional(v.id("restock")),
     correction_id: v.optional(v.id("stock_corrections")),

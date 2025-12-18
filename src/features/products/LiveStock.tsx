@@ -549,8 +549,8 @@ export function LiveStock({
                                 <div className="text-sm text-gray-900 dark:text-dark-text">
                                     {movement.movement_type === 'product_edit' ? (
                                         <>
-                                            <div>Old: {movement.old_value || '-'}</div>
-                                            <div>New: {movement.new_value || '-'}</div>
+                                            <div>Old: {typeof movement.old_value === 'string' ? movement.old_value : (movement.old_value !== undefined && movement.old_value !== null ? movement.old_value : '-')}</div>
+                                            <div>New: {typeof movement.new_value === 'string' ? movement.new_value : (movement.new_value !== undefined && movement.new_value !== null ? movement.new_value : '-')}</div>
                                         </>
                                     ) : (
                                         <>
@@ -963,6 +963,23 @@ export function LiveStock({
                 
                 // Create a pending request for each change
                 for (const change of changes) {
+                    // Determine if the field is numeric or string
+                    const isNumericField = ['box_to_kg_ratio', 'cost_per_box', 'price_per_box'].includes(change.field);
+                    const isStringField = change.field === 'name';
+                    
+                    // Prepare values based on field type
+                    let oldValue, newValue;
+                    if (isStringField) {
+                        oldValue = change.oldValue;
+                        newValue = change.newValue;
+                    } else if (isNumericField) {
+                        oldValue = parseFloat(change.oldValue) || 0;
+                        newValue = parseFloat(change.newValue) || 0;
+                    } else {
+                        oldValue = 0;
+                        newValue = 0;
+                    }
+                    
                     await recordStockMovement({
                         movement_id: `movement_${Date.now()}_${change.field}`,
                         product_id: editingProduct._id,
@@ -970,8 +987,8 @@ export function LiveStock({
                         field_changed: change.field,
                         box_change: 0, // No change in quantity
                         kg_change: 0, // No change in quantity
-                        old_value: parseFloat(change.oldValue) || 0,
-                        new_value: parseFloat(change.newValue) || 0,
+                        old_value: oldValue,
+                        new_value: newValue,
                         reason: editForm.reason,
                         status: "pending",
                         performed: "User", // In a real app, this would be the actual user
