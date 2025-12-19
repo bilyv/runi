@@ -265,7 +265,7 @@ const applicationTables = {
   transactions: defineTable({
     transaction_id: v.string(),
     sales_id: v.id("sales"),
-    user_id: v.id("users"),.
+    user_id: v.id("users"),
     product_name: v.string(),
     client_name: v.string(),
     boxes_quantity: v.number(),
