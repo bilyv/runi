@@ -61,27 +61,27 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
         </div>
       </div>
 
-      <nav className="flex-1 px-4 pb-4 overflow-y-auto custom-scrollbar">
-        {menuGroups.map((group, groupIdx) => (
-          <div key={group.label} className={groupIdx > 0 ? "mt-8" : ""}>
-            <h3 className="px-4 text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 dark:text-gray-500 mb-3">
-              {group.label}
-            </h3>
-            <div className="space-y-1">
-              {group.items.map((module) => {
-                const Icon = module.icon;
-                const isActive = activeModule === module.id;
+    <nav className="flex-1 px-4 pb-4 overflow-y-auto custom-scrollbar">
+      {menuGroups.map((group, groupIdx) => (
+        <div key={group.label} className={groupIdx > 0 ? "mt-5" : ""}>
+          <h3 className="px-4 text-[10px] font-bold uppercase tracking-[0.1em] text-gray-400 dark:text-gray-500 mb-1.5">
+            {group.label}
+          </h3>
+          <div className="space-y-0.5">
+            {group.items.map((module) => {
+              const Icon = module.icon;
+              const isActive = activeModule === module.id;
 
-                return (
-                  <button
-                    key={module.id}
-                    onClick={() => onModuleChange(module.id)}
-                    className={`w-full flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-left transition-all duration-300 group relative ${
-                      isActive
-                        ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                        : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200"
-                    }`}
-                  >
+              return (
+                <button
+                  key={module.id}
+                  onClick={() => onModuleChange(module.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-left transition-all duration-300 group relative ${
+                    isActive
+                      ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                      : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200"
+                  }`}
+                >
                     <Icon
                       size={20}
                       strokeWidth={isActive ? 2.5 : 2}
