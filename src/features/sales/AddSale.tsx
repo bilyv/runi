@@ -162,7 +162,7 @@ export function AddSale() {
       const saleId = await createSale({
         sales_id: `sale_${Date.now()}`,
         user_id: userId,
-        product_id: formData.product_id,
+        product_id: formData.product_id as any,
         boxes_quantity: boxesQuantity,
         kg_quantity: kgQuantity,
         box_price: selectedProduct.price_per_box,

@@ -7,8 +7,8 @@ import { Input } from "../../components/ui/Input";
 
 export function ManageSales() {
   // Fetch sales data
-  const sales = useQuery(api.sales.list) || [];
-  const products = useQuery(api.products.list) || [];
+  const sales = useQuery(api.sales.list, {}) || [];
+  const products = useQuery(api.products.list, {}) || [];
   
   // Mutations
   const deleteSale = useMutation(api.sales.deleteSale);

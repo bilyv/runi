@@ -265,7 +265,7 @@ const applicationTables = {
   transactions: defineTable({
     transaction_id: v.string(),
     sales_id: v.id("sales"),
-    user_id: v.id("users"),
+    user_id: v.id("users"),.
     product_name: v.string(),
     client_name: v.string(),
     boxes_quantity: v.number(),
@@ -280,6 +280,24 @@ const applicationTables = {
     .index("by_user", ["user_id"])
     .index("by_payment_status", ["payment_status"])
     .index("by_updated_by", ["updated_by"]),
+
+  // Deposit
+  deposit: defineTable({
+    deposit_id: v.string(),
+    user_id: v.string(),
+    deposit_type: v.string(),
+    account_name: v.string(),
+    account_number: v.string(),
+    amount: v.number(),
+    to_recipient: v.string(),
+    deposit_image_url: v.string(),
+    approval: v.string(),
+    created_by: v.string(),
+    updated_at: v.number(),
+    updated_by: v.string(),
+  })
+    .index("by_user_id", ["user_id"]) 
+    .index("by_deposit_id", ["deposit_id"]),
 };
 
 export default defineSchema({
