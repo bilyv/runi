@@ -112,152 +112,71 @@ export function Debtors() {
     );
   }
 
-  return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text mb-4">Unpaid/Debtors</h2>
-      <div className="bg-white dark:bg-dark-card rounded-lg border border-gray-200 dark:border-dark-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-            <thead className="bg-gray-50 dark:bg-dark-card">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Transaction ID</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Amount</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Payment Method</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-dark-card divide-y divide-gray-200 dark:divide-dark-border">
-              {allDebtTransactions.map((transaction) => (
-                <tr key={transaction.transaction_id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-dark-text">{transaction.transaction_id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{transaction.product_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{transaction.client_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {transaction.boxes_quantity} boxes / {transaction.kg_quantity} kg
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${transaction.total_amount.toFixed(2)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${transaction.payment_status === 'partial' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
-                      {transaction.payment_status === 'partial' ? 'Partial Payment' : 'Unpaid'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{transaction.payment_method}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    <button
-                      onClick={() => {
-                        setSelectedTransaction(transaction);
-                        setShowModal(true);
-                      }}
-                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs"
-                    >
-                      Mark as Paid
-                    </button>
-                  </td>
+    return (
+      <div className="space-y-6">
+        <div className="overflow-hidden rounded-3xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-dark-card/50 backdrop-blur-sm shadow-xl mt-6">
+          <div className="p-7 border-b border-gray-200/50 dark:border-white/5 flex justify-between items-center bg-gray-50/30 dark:bg-white/[0.01]">
+            <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">Unpaid/Debtors</h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200/50 dark:border-white/5">
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Transaction ID</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Product</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Client</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Quantity</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Total</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Status</th>
+                  <th className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
+                {allDebtTransactions.map((transaction) => (
+                  <tr key={transaction.transaction_id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-500 dark:text-gray-400">
+                      {transaction.transaction_id.split('-').slice(0, 2).join('-')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white font-display">{transaction.product_name}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                      {transaction.client_name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{transaction.boxes_quantity} Boxes</span>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">{transaction.kg_quantity} KG</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-bold text-red-600 dark:text-red-400">${transaction.total_amount.toFixed(2)}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                        ${transaction.payment_status === 'partial' ? 'bg-amber-100/50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' :
+                          'bg-red-100/50 text-red-600 dark:bg-red-500/10 dark:text-red-400'}`}>
+                        {transaction.payment_status === 'partial' ? 'Partial' : 'Unpaid'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <button
+                        onClick={() => {
+                          setSelectedTransaction(transaction);
+                          setShowModal(true);
+                        }}
+                        className="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:underline"
+                      >
+                        Mark Paid
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-      {/* Mark as Paid Modal */}
-      <Modal
-        isOpen={showModal && !!selectedTransaction}
-        onClose={() => {
-          setShowModal(false);
-          setSelectedTransaction(null);
-          setAmountPaid('');
-        }}
-        title="Mark as Paid"
-      >
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (!selectedTransaction) return;
-
-            // Calculate new payment status
-            const newPaymentStatus =
-              parseFloat(amountPaid) >= selectedTransaction.total_amount ? 'completed' : 'partial';
-
-            try {
-              // Update the transaction
-              await updateTransaction({
-                transaction_id: selectedTransaction.transaction_id,
-                sales_id: selectedTransaction.sales_id,
-                user_id: selectedTransaction.user_id,
-                product_name: selectedTransaction.product_name,
-                client_name: selectedTransaction.client_name,
-                boxes_quantity: selectedTransaction.boxes_quantity,
-                kg_quantity: selectedTransaction.kg_quantity,
-                total_amount: selectedTransaction.total_amount,
-                payment_status: newPaymentStatus,
-                payment_method: selectedTransaction.payment_method,
-                updated_by: selectedTransaction.updated_by, // In a real app, this would be the current user
-                updated_at: Date.now(),
-              });
-            } catch (error) {
-              console.error('Error updating transaction:', error);
-              // In a real app, you would show an error message to the user
-            }
-
-            // Close modal and reset state
-            setShowModal(false);
-            setSelectedTransaction(null);
-            setAmountPaid('');
-          }}
-          className="space-y-4"
-        >
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Customer</label>
-            <input
-              type="text"
-              value={selectedTransaction?.client_name || ''}
-              disabled
-              className="w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-dark-text"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount Paid</label>
-            <input
-              type="number"
-              value={amountPaid}
-              onChange={(e) => setAmountPaid(e.target.value)}
-              min="0"
-              step="0.01"
-              required
-              className="w-full px-3 py-2 border border-gray-300 dark:border-dark-border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-card dark:text-dark-text"
-              placeholder="Enter amount paid"
-            />
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                setShowModal(false);
-                setSelectedTransaction(null);
-                setAmountPaid('');
-              }}
-              className="px-4 py-2 border border-gray-300 dark:border-dark-border rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-dark-card/50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              Mark as Paid
-            </button>
-          </div>
-        </form>
-      </Modal>
-    </div>
-  );
+    );
 }

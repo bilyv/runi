@@ -48,127 +48,80 @@ export function AuditSales() {
     }
   };
   
-  return (
-    <div className="bg-white dark:bg-dark-card rounded-lg border border-gray-200 dark:border-dark-border p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-dark-text">Audit Sales</h2>
-      </div>
-      
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-          <thead className="bg-gray-50 dark:bg-dark-card">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Action Type</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Changed Details</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Reason</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Performed By</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-dark-card divide-y divide-gray-200 dark:divide-dark-border">
-            {audits.length > 0 ? (
-              audits.map((audit: any) => (
-                <tr key={audit._id} className="hover:bg-gray-50 dark:hover:bg-dark-card/80">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {formatTime(audit.updated_at)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-dark-text">
-                    {(() => {
-                      const sale = getSale(audit.sales_id);
-                      return sale ? getProductName(sale.product_id) : "Unknown Product";
-                    })()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {audit.audit_type}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="max-w-xs">
-                      {audit.audit_type === "quantity_change" && (
-                        <div>
-                          <div>Boxes: {audit.boxes_change?.before} → {audit.boxes_change?.after}</div>
-                          <div>Kg: {audit.kg_change?.before} → {audit.kg_change?.after}</div>
-                        </div>
-                      )}
-                      {audit.audit_type === "payment_method_change" && (
-                        <div>
-                          Payment Method: {audit.old_values?.payment_method} → {audit.new_values?.payment_method}
-                        </div>
-                      )}
-                      {audit.audit_type === "deletion" && (
-                        <div>
-                          <div>Boxes: {audit.boxes_change?.before} (to be deleted)</div>
-                          <div>Kg: {audit.kg_change?.before} (to be deleted)</div>
-                        </div>
-                      )}
-                      {audit.audit_type === "edit" && (
-                        <div>
-                          <div>Boxes: {audit.boxes_change?.before} → {audit.boxes_change?.after}</div>
-                          <div>Kg: {audit.kg_change?.before} → {audit.kg_change?.after}</div>
-                          <div>Payment: {audit.old_values?.payment_method} → {audit.new_values?.payment_method}</div>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="max-w-xs">
-                      <div className="truncate" title={audit.reason}>
-                        {audit.reason}
-                      </div>
-                      {audit.approval_reason && (
-                        <div className="truncate text-xs mt-1 italic" title={`Approval reason: ${audit.approval_reason}`}>
-                          Approved: {audit.approval_reason}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {audit.performed_by}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${audit.approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 
-                        audit.approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' : 
-                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'}`}>
-                      {formatStatus(audit.approval_status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    {audit.approval_status === "pending" ? (
-                      <div className="flex space-x-2">
-                        <Button 
-                          variant="primary" 
-                          size="sm"
-                          onClick={() => handleAuditAction(audit._id, "approved")}
-                        >
-                          Approve
-                        </Button>
-                        <Button 
-                          variant="danger" 
-                          size="sm"
-                          onClick={() => handleAuditAction(audit._id, "rejected")}
-                        >
-                          Reject
-                        </Button>
-                      </div>
-                    ) : (
-                      <span className="text-gray-500 dark:text-gray-400">-</span>
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No audit records found
-                </td>
+    return (
+      <div className="overflow-hidden rounded-3xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-dark-card/50 backdrop-blur-sm shadow-xl">
+        <div className="p-7 border-b border-gray-200/50 dark:border-white/5 bg-gray-50/30 dark:bg-white/[0.01]">
+          <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">Audit History</h2>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200/50 dark:border-white/5">
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Time</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Product</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Type</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Details</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Status</th>
+                <th className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
+              {audits.length > 0 ? (
+                audits.map((audit: any) => (
+                  <tr key={audit._id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                      {formatTime(audit.updated_at)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white font-display">
+                        {(() => {
+                          const sale = getSale(audit.sales_id);
+                          return sale ? getProductName(sale.product_id) : "Unknown Product";
+                        })()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                      <span className="bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
+                        {audit.audit_type}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="max-w-xs space-y-1">
+                        {audit.audit_type === "edit" && (
+                          <div className="text-[11px] opacity-80">
+                            {audit.boxes_change?.before} → {audit.boxes_change?.after} Boxes
+                          </div>
+                        )}
+                        <div className="italic truncate" title={audit.reason}>{audit.reason}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                        ${audit.approval_status === 'approved' ? 'bg-emerald-100/50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 
+                          audit.approval_status === 'rejected' ? 'bg-red-100/50 text-red-600 dark:bg-red-500/10 dark:text-red-400' : 
+                          'bg-amber-100/50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'}`}>
+                        {formatStatus(audit.approval_status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      {audit.approval_status === "pending" ? (
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => handleAuditAction(audit._id, "approved")} className="p-1.5 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 transition-colors"><Check size={14} /></button>
+                          <button onClick={() => handleAuditAction(audit._id, "rejected")} className="p-1.5 rounded-full bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors"><X size={14} /></button>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 opacity-30 text-xs">-</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr><td colSpan={6} className="px-6 py-16 text-center text-sm text-gray-500 dark:text-gray-400 font-medium">No audit records found</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
     </div>
   );
 }

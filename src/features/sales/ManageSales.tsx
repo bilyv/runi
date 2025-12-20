@@ -160,73 +160,68 @@ export function ManageSales() {
     }
   };
   
-  return (
-    <div className="bg-white/50 dark:bg-dark-card/50 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-dark-border/50 p-6 shadow-xl">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">Manage Sales</h2>
-      </div>
-      
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-          <thead>
-            <tr>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Product Name</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Quantity</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Price (Box/Kg)</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Total Amount</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Status</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest font-display">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-dark-border">
-            {sales.length > 0 ? (
-              sales.map((sale: any) => (
-                <tr key={sale._id} className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-dark-text font-display tracking-tight">
-                    {getProductName(sale.product_id)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400 font-display">
-                    {sale.boxes_quantity} boxes, {sale.kg_quantity} kg
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400 font-display">
-                    <div className="flex flex-col">
-                      <span>Box: ${sale.box_price.toFixed(2)}</span>
-                      <span>Kg: ${sale.kg_price.toFixed(2)}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-blue-600 dark:text-blue-400 font-display">
-                    ${sale.total_amount.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full font-display
-                      ${sale.payment_status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400' : 
-                        sale.payment_status === 'partial' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400' : 
-                        'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400'}`}>
-                      {formatStatus(sale.payment_status)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <Button variant="secondary" size="sm" onClick={() => handleEditClick(sale)} className="rounded-xl">
-                        Edit
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(sale._id)} className="rounded-xl">
-                        Delete
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400 font-display">
-                  No sales records found
-                </td>
+    return (
+      <div className="overflow-hidden rounded-3xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-dark-card/50 backdrop-blur-sm shadow-xl">
+        <div className="p-7 border-b border-gray-200/50 dark:border-white/5 flex justify-between items-center bg-gray-50/30 dark:bg-white/[0.01]">
+          <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">Recent Sales</h2>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200/50 dark:border-white/5">
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Product</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Quantity</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Price Details</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Total</th>
+                <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Status</th>
+                <th className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
+              {sales.length > 0 ? (
+                sales.map((sale: any) => (
+                  <tr key={sale._id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white font-display">{getProductName(sale.product_id)}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{sale.boxes_quantity} Boxes</span>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">{sale.kg_quantity} KG</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex flex-col">
+                        <span>Box: ${sale.box_price.toFixed(2)}</span>
+                        <span className="text-[10px] text-gray-400 font-medium">${sale.kg_price.toFixed(2)}/KG</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">${sale.total_amount.toFixed(2)}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                        ${sale.payment_status === 'completed' ? 'bg-emerald-100/50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 
+                          sale.payment_status === 'partial' ? 'bg-amber-100/50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' : 
+                          'bg-red-100/50 text-red-600 dark:bg-red-500/10 dark:text-red-400'}`}>
+                        {formatStatus(sale.payment_status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => handleEditClick(sale)} className="p-1.5 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><Edit3 size={16} /></button>
+                        <button onClick={() => handleDelete(sale._id)} className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr><td colSpan={6} className="px-6 py-16 text-center text-sm text-gray-500 dark:text-gray-400 font-medium">No sales records found</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       
       {/* Edit Sale Modal */}
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Sale">

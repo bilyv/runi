@@ -144,102 +144,71 @@ export function Deposited() {
   }
 
   const renderTable = () => (
-    <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden shadow-sm">
+    <div className="overflow-hidden rounded-3xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-dark-card/50 backdrop-blur-sm shadow-xl mt-6">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-border">
-          <thead className="bg-gray-50 dark:bg-dark-bg/50">
-            <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Date & Time</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Amount</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Type</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Account</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">ID</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Receipt</th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 dark:text-dark-text-muted uppercase tracking-wider">Actions</th>
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-200/50 dark:border-white/5">
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Date & Time</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Amount</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Type</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Account</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Status</th>
+              <th className="px-6 py-4 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Receipt</th>
+              <th className="px-6 py-4 text-right text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-display">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-dark-border bg-white dark:bg-dark-card">
+          <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
             {filteredDeposits && filteredDeposits.length > 0 ? (
               filteredDeposits.map((deposit) => (
-                <tr key={deposit.deposit_id} className="hover:bg-gray-50 dark:hover:bg-dark-bg/30 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-dark-text">
+                <tr key={deposit.deposit_id} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col">
-                      <span className="font-medium">{new Date(deposit.updated_at).toLocaleDateString()}</span>
-                      <span className="text-xs text-gray-400">{new Date(deposit.updated_at).toLocaleTimeString()}</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white font-display">{new Date(deposit.updated_at).toLocaleDateString()}</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">{new Date(deposit.updated_at).toLocaleTimeString()}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className="font-bold text-gray-900 dark:text-dark-text">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
                       ${deposit.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                    <span className="bg-gray-100 dark:bg-white/5 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">
                       {deposit.deposit_type}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex flex-col text-gray-600 dark:text-dark-text">
-                      <span className="font-medium">{deposit.account_name}</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white font-display">{deposit.account_name}</span>
                       <span className="text-xs text-gray-400">{deposit.account_number}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500 dark:text-dark-text-muted">
-                    {deposit.deposit_id.split('-').slice(0, 2).join('-')}
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       deposit.approval === "approved" 
-                        ? "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-100 dark:border-green-800"
+                        ? "bg-emerald-100/50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" 
                         : deposit.approval === "rejected"
-                        ? "bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-100 dark:border-red-800"
-                        : "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-100 dark:border-amber-800"
+                        ? "bg-red-100/50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+                        : "bg-amber-100/50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
                     }`}>
-                      {deposit.approval === "approved" ? <CheckCircle className="w-3 h-3" /> : 
-                       deposit.approval === "rejected" ? <XCircle className="w-3 h-3" /> : 
-                       <Clock className="w-3 h-3" />}
-                      {deposit.approval.charAt(0).toUpperCase() + deposit.approval.slice(1)}
+                      {deposit.approval}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-dark-text-muted">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {deposit.deposit_image_url ? (
-                      <a 
-                        href={deposit.deposit_image_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View
-                      </a>
+                      <a href={deposit.deposit_image_url} target="_blank" rel="noopener noreferrer" className="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:underline">View</a>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 text-gray-400 italic">
-                        <AlertCircle className="w-4 h-4" />
-                        No receipt
-                      </span>
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-gray-400 opacity-50">No receipt</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button 
-                      onClick={() => handleDelete(deposit.deposit_id)}
-                      className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
-                      title="Delete Record"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <button onClick={() => handleDelete(deposit.deposit_id)} className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"><Trash2 size={16} /></button>
                   </td>
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={8} className="px-6 py-12 text-center">
-                  <div className="flex flex-col items-center justify-center">
-                    <FileText className="w-12 h-12 text-gray-300 dark:text-dark-border mb-3" />
-                    <p className="text-gray-500 dark:text-dark-text-muted">No transactions found matching your search.</p>
-                  </div>
-                </td>
-              </tr>
+              <tr><td colSpan={7} className="px-6 py-16 text-center text-sm text-gray-500 dark:text-gray-400 font-medium">No deposits found</td></tr>
             )}
           </tbody>
         </table>
