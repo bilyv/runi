@@ -79,19 +79,19 @@ export function Reports() {
     }
   ];
 
-  return (
-    <div className="p-6 space-y-8 max-w-7xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
-          Reports & Analytics
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1 font-body">
-          Gain deep insights into your business performance and growth.
-        </p>
-      </div>
-      
-      <motion.div 
-        variants={container}
+    return (
+      <div className="p-6 space-y-8 max-w-7xl mx-auto">
+        <div className="text-center">
+          <h1 className="text-4xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+            Reports & Analytics
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 font-body text-lg">
+            Gain deep insights into your business performance and growth.
+          </p>
+        </div>
+        
+        <motion.div 
+          variants={container}
         initial="hidden"
         animate="show"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"

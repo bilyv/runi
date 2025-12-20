@@ -50,14 +50,13 @@ export function Products() {
     { id: "liveStock", label: "Live Stock" },
   ];
 
-  return (
-    <div className="p-6 space-y-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+    return (
+      <div className="p-6 space-y-8 max-w-7xl mx-auto">
+        <div className="text-center">
+          <h1 className="text-4xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
             Inventory
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 font-body">
+          <p className="text-gray-500 dark:text-gray-400 mt-2 font-body text-lg">
             Manage your product catalog and monitor stock levels.
           </p>
         </div>
@@ -67,9 +66,8 @@ export function Products() {
           activeTab={activeTab} 
           onChange={(id) => setActiveTab(id as TabType)} 
         />
-      </div>
 
-      <div className="relative min-h-[500px]">
+        <div className="relative min-h-[500px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
