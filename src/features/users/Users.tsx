@@ -2,17 +2,13 @@ import { useState } from "react";
 import { AddWorker } from "./AddWorker";
 import { AllWorkers } from "./AllWorkers";
 import { RolesAndPermissions } from "./RolesAndPermissions";
+import { SubTabs } from "../../components/ui/SubTabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TabType = "add" | "all" | "roles";
 
 export function Users() {
   const [activeTab, setActiveTab] = useState<TabType>("add");
-  const [prevTab, setPrevTab] = useState<TabType>("add");
-
-  const handleTabChange = (tabId: TabType) => {
-    setPrevTab(activeTab);
-    setActiveTab(tabId);
-  };
 
   const tabs = [
     { id: "add", label: "Add Worker" },
@@ -20,63 +16,39 @@ export function Users() {
     { id: "roles", label: "Roles & Permissions" },
   ];
 
-  // Determine animation direction
-  const getAnimationClass = (tabId: TabType) => {
-    if (tabId !== activeTab) return "hidden";
-
-    const tabIndex = tabs.findIndex(t => t.id === tabId);
-    const prevTabIndex = tabs.findIndex(t => t.id === prevTab);
-
-    if (tabIndex > prevTabIndex) {
-      return "animate-fadeInRight";
-    } else if (tabIndex < prevTabIndex) {
-      return "animate-fadeInLeft";
-    }
-    return "animate-fadeIn";
-  };
-
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text">Users & Roles</h1>
-      </div>
-      
-      {/* Sub-Tabs Navigation */}
-      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
-        <div className="flex border-b border-gray-200 dark:border-dark-border">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id as TabType)}
-              className={`px-6 py-4 text-sm font-medium relative transition-all duration-300 ease-in-out ${activeTab === tab.id
-                ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-card/50"
-                }`}
-              style={{
-                borderTopLeftRadius: tab.id === tabs[0].id ? '0.75rem' : '0',
-                borderTopRightRadius: tab.id === tabs[tabs.length - 1].id ? '0.75rem' : '0'
-              }}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-300" />
-              )}
-            </button>
-          ))}
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+            Users & Roles
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-body">
+            Manage your team members, their roles, and system permissions.
+          </p>
         </div>
         
-        {/* Tab Content with Slide Animation */}
-        <div className="p-6 overflow-hidden">
-          <div className={`${getAnimationClass("add")}`}>
+        <SubTabs 
+          tabs={tabs} 
+          activeTab={activeTab} 
+          onChange={(id) => setActiveTab(id as TabType)} 
+        />
+      </div>
+      
+      <div className="relative min-h-[500px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
             {activeTab === "add" && <AddWorker />}
-          </div>
-          <div className={`${getAnimationClass("all")}`}>
             {activeTab === "all" && <AllWorkers />}
-          </div>
-          <div className={`${getAnimationClass("roles")}`}>
             {activeTab === "roles" && <RolesAndPermissions />}
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

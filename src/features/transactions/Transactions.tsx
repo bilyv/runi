@@ -2,17 +2,13 @@ import { useState } from "react";
 import { AllTransactions } from "./AllTransactions";
 import { Deposited } from "./Deposited";
 import { Debtors } from "./Debtors";
+import { SubTabs } from "../../components/ui/SubTabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TabType = "all" | "deposited" | "debtors";
 
 export function Transactions() {
   const [activeTab, setActiveTab] = useState<TabType>("all");
-  const [prevTab, setPrevTab] = useState<TabType>("all");
-
-  const handleTabChange = (tabId: TabType) => {
-    setPrevTab(activeTab);
-    setActiveTab(tabId);
-  };
 
   const tabs = [
     { id: "all", label: "All Transactions" },
@@ -20,63 +16,39 @@ export function Transactions() {
     { id: "debtors", label: "Unpaid/Debtors" },
   ];
 
-  // Determine animation direction
-  const getAnimationClass = (tabId: TabType) => {
-    if (tabId !== activeTab) return "hidden";
-
-    const tabIndex = tabs.findIndex(t => t.id === tabId);
-    const prevTabIndex = tabs.findIndex(t => t.id === prevTab);
-
-    if (tabIndex > prevTabIndex) {
-      return "animate-fadeInRight";
-    } else if (tabIndex < prevTabIndex) {
-      return "animate-fadeInLeft";
-    }
-    return "animate-fadeIn";
-  };
-
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text">Transactions</h1>
-      </div>
-      
-      {/* Sub-Tabs Navigation */}
-      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
-        <div className="flex border-b border-gray-200 dark:border-dark-border">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id as TabType)}
-              className={`px-6 py-4 text-sm font-medium relative transition-all duration-300 ease-in-out ${activeTab === tab.id
-                ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-card/50"
-                }`}
-              style={{
-                borderTopLeftRadius: tab.id === tabs[0].id ? '0.75rem' : '0',
-                borderTopRightRadius: tab.id === tabs[tabs.length - 1].id ? '0.75rem' : '0'
-              }}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-300" />
-              )}
-            </button>
-          ))}
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+            Transactions
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-body">
+            Monitor all your business financial flows in one place.
+          </p>
         </div>
         
-        {/* Tab Content with Slide Animation */}
-        <div className="overflow-hidden">
-          <div className={`${getAnimationClass("all")}`}>
-            <AllTransactions />
-          </div>
-          <div className={`${getAnimationClass("deposited")}`}>
-            <Deposited />
-          </div>
-          <div className={`${getAnimationClass("debtors")}`}>
-            <Debtors />
-          </div>
-        </div>
+        <SubTabs 
+          tabs={tabs} 
+          activeTab={activeTab} 
+          onChange={(id) => setActiveTab(id as TabType)} 
+        />
+      </div>
+      
+      <div className="relative min-h-[500px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {activeTab === "all" && <AllTransactions />}
+            {activeTab === "deposited" && <Deposited />}
+            {activeTab === "debtors" && <Debtors />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

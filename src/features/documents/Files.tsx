@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
+import { motion } from "framer-motion";
 
 interface FileType {
   _id: string;
@@ -20,10 +21,7 @@ export function Files() {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<FileType | null>(null);
   
-  // Fetch files from Convex
   const files = useQuery(api.files.list, { folderId: undefined }) || [];
-  
-  // Delete file mutation
   const deleteFile = useMutation(api.files.deleteFile);
   
   const handleViewFile = (file: FileType) => {
@@ -36,7 +34,8 @@ export function Files() {
     setSelectedFile(null);
   };
   
-  const handleDeleteClick = (file: FileType) => {
+  const handleDeleteClick = (e: React.MouseEvent, file: FileType) => {
+    e.stopPropagation();
     setFileToDelete(file);
     setIsDeleteConfirmOpen(true);
   };
@@ -75,37 +74,33 @@ export function Files() {
   };
   
   return (
-    <div className="p-6 md:p-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-xl font-display font-bold text-gray-900 dark:text-dark-text">Files</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-sans">View and manage your uploaded documents</p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <h2 className="text-xl font-display font-semibold text-gray-900 dark:text-dark-text tracking-tight">All Files</h2>
       
       {files.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {files.map((file: FileType) => (
-            <div 
-              key={file._id} 
-              className="group bg-white dark:bg-dark-card/40 rounded-2xl border border-gray-200 dark:border-dark-border p-5 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm"
+            <motion.div 
+              key={file._id}
+              whileHover={{ y: -4 }}
+              onClick={() => handleViewFile(file)}
+              className="bg-white dark:bg-dark-card rounded-2xl border border-gray-200 dark:border-dark-border p-5 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 group cursor-pointer relative"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-2xl mr-3 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <div className={`p-3 rounded-2xl transition-colors duration-300 ${isImageFile(file.file_type) ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
                   {isImageFile(file.file_type) ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   )}
                 </div>
                 <button 
-                  onClick={() => handleDeleteClick(file)}
-                  className="p-2 text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
-                  aria-label="Delete file"
+                  onClick={(e) => handleDeleteClick(e, file)}
+                  className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 duration-300"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -113,39 +108,35 @@ export function Files() {
                 </button>
               </div>
               
-              <div className="space-y-1 mb-4">
-                <h3 className="font-display font-bold text-gray-900 dark:text-dark-text truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{file.file_name}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-sans flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                  {formatDate(file.updated_at)}
+              <div className="min-w-0">
+                <h3 className="font-display font-semibold text-gray-900 dark:text-dark-text text-lg truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {file.file_name}
+                </h3>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-body">
+                  Uploaded {formatDate(file.updated_at)}
                 </p>
               </div>
-              
-              <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 font-medium mb-5 bg-gray-50 dark:bg-dark-bg/50 p-2 rounded-xl">
-                <span>{formatFileSize(file.file_size)}</span>
-                <span className="uppercase tracking-wider px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md">{file.file_type.split('/')[1] || file.file_type}</span>
+
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100 dark:border-dark-border/50">
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-lg">
+                  {file.file_type.split('/')[1]?.toUpperCase() || 'FILE'}
+                </span>
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  {formatFileSize(file.file_size)}
+                </span>
               </div>
-              
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                className="w-full justify-center rounded-xl font-bold bg-gray-100 dark:bg-dark-border border-none hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-all duration-300"
-                onClick={() => handleViewFile(file)}
-              >
-                View Details
-              </Button>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-dark-card rounded-3xl border-2 border-dashed border-gray-200 dark:border-dark-border p-12 text-center max-w-md mx-auto">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <div className="bg-white dark:bg-dark-card rounded-2xl border border-dashed border-gray-300 dark:border-dark-border p-12 text-center">
+          <div className="bg-gray-50 dark:bg-gray-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1.01.707.293l5.414 5.414a1 1.01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h3 className="text-xl font-display font-bold text-gray-900 dark:text-dark-text mb-2">No files found</h3>
-          <p className="text-gray-500 dark:text-gray-400 font-sans">Upload some files to your folders to see them here</p>
+          <h3 className="text-xl font-display font-bold text-gray-900 dark:text-dark-text mb-2">No files yet</h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-0 max-w-xs mx-auto">Upload documents to manage them efficiently in one place.</p>
         </div>
       )}
       

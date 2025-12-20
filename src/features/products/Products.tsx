@@ -1,12 +1,13 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
-import { Button } from "../../components/ui/Button";
 import { toast } from "sonner";
 import { AddCategoryModal } from "./AddCategoryModal";
 import { ProductCategory } from "./ProductCategory";
 import { ProductAdding } from "./ProductAdding";
 import { LiveStock } from "./LiveStock";
+import { SubTabs } from "../../components/ui/SubTabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TabType = "category" | "adding" | "liveStock";
 
@@ -15,9 +16,7 @@ export function Products() {
   const [category, setCategory] = useState("");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
-  const [editingProduct, setEditingProduct] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<TabType>("liveStock");
-  const [prevTab, setPrevTab] = useState<TabType>("liveStock");
 
   const products = useQuery(api.products.list, {
     search: search || undefined,
@@ -35,11 +34,9 @@ export function Products() {
       await deleteCategory({ id: categoryId });
       toast.success("Category deleted successfully");
     } catch (error: any) {
-      // Show user-friendly error message for categories with products
       if (error.message && error.message.includes("Cannot delete category that has products")) {
         toast.error("Cannot delete category that has products. Please move or delete all products in this category first.");
       } else if (error.message && error.message.includes("[CONVEX M")) {
-        // Hide raw Convex error messages
         toast.error("CANNOT DELETE THE CATEGORY WITH PRODUCTS IN.");
       } else {
         toast.error(error.message || "Failed to delete category");
@@ -47,91 +44,61 @@ export function Products() {
     }
   };
 
-  const handleTabChange = (tabId: TabType) => {
-    setPrevTab(activeTab);
-    setActiveTab(tabId);
-  };
-
   const tabs = [
-    { id: "category", label: "Category" },
-    { id: "adding", label: "Adding" },
+    { id: "category", label: "Categories" },
+    { id: "adding", label: "Add Product" },
     { id: "liveStock", label: "Live Stock" },
   ];
 
-  // Determine animation direction
-  const getAnimationClass = (tabId: TabType) => {
-    if (tabId !== activeTab) return "hidden";
-
-    const tabIndex = tabs.findIndex(t => t.id === tabId);
-    const prevTabIndex = tabs.findIndex(t => t.id === prevTab);
-
-    if (tabIndex > prevTabIndex) {
-      return "animate-fadeInRight";
-    } else if (tabIndex < prevTabIndex) {
-      return "animate-fadeInLeft";
-    }
-    return "animate-fadeIn";
-  };
-
-    return (
-    <div className="p-4 md:p-8 space-y-8 bg-gray-50/50 dark:bg-dark-bg/50 min-h-full">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+  return (
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
-            Product Inventory
+            Inventory
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 font-sans text-sm mt-1">
-            Manage your stock, categories and inventory levels
+          <p className="text-gray-500 dark:text-gray-400 mt-1 font-body">
+            Manage your product catalog and monitor stock levels.
           </p>
         </div>
+        
+        <SubTabs 
+          tabs={tabs} 
+          activeTab={activeTab} 
+          onChange={(id) => setActiveTab(id as TabType)} 
+        />
       </div>
 
-      {/* Sub-Tabs Navigation - Modern Pill Style */}
-      <div className="space-y-6">
-        <div className="flex p-1 bg-gray-100 dark:bg-dark-card/50 rounded-2xl w-fit border border-gray-200 dark:border-dark-border backdrop-blur-sm">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id as TabType)}
-              className={`px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ease-out flex items-center gap-2 ${activeTab === tab.id
-                ? "bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-sm ring-1 ring-gray-200 dark:ring-blue-500/50"
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content with Smooth Transitions */}
-        <div className="bg-white dark:bg-dark-card rounded-3xl border border-gray-200 dark:border-dark-border shadow-sm overflow-hidden min-h-[400px]">
-          <div className="overflow-hidden">
-            <div className={`${getAnimationClass("category")}`}>
+      <div className="relative min-h-[500px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {activeTab === "category" && (
               <ProductCategory
                 categories={categories}
                 onAddCategory={() => setShowCategoryModal(true)}
                 onEditCategory={setEditingCategory}
                 onDeleteCategory={handleDeleteCategory}
               />
-            </div>
-            <div className={`${getAnimationClass("adding")}`}>
-              <ProductAdding />
-            </div>
-            <div className={`${getAnimationClass("liveStock")}`}>
+            )}
+            {activeTab === "adding" && <ProductAdding />}
+            {activeTab === "liveStock" && (
               <LiveStock
                 search={search}
                 setSearch={setSearch}
                 products={products || []}
                 categories={categories}
               />
-            </div>
-          </div>
-        </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-
-
-      {/* Add/Edit Category Modal */}
       <AddCategoryModal
         isOpen={showCategoryModal || !!editingCategory}
         onClose={() => {
