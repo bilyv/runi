@@ -5,6 +5,7 @@ import { Modal } from "../../components/ui/Modal";
 import { Button } from "../../components/ui/Button";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { ProductDetailModal } from "./ProductDetailModal";
 
 interface LiveStockProps {
     search: string;
@@ -23,6 +24,8 @@ export function LiveStock({
     const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
     const [isEditProductOpen, setIsEditProductOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<any>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [selectedProductForDetail, setSelectedProductForDetail] = useState<any>(null);
     const [editForm, setEditForm] = useState({
         name: "",
         box_to_kg_ratio: "",
@@ -128,7 +131,13 @@ export function LiveStock({
                     filteredProducts.map((product: any, index: number) => (
                         <tr key={product._id} className={index % 2 === 0 ? "bg-white dark:bg-dark-card" : "bg-gray-50 dark:bg-dark-card/50"}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
+                                <div 
+                                    className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
+                                    onClick={() => {
+                                        setSelectedProductForDetail(product);
+                                        setIsDetailModalOpen(true);
+                                    }}
+                                >
                                     {product.name}
                                 </div>
                             </td>
@@ -239,7 +248,13 @@ export function LiveStock({
                     filteredProducts.map((product: any, index: number) => (
                         <tr key={product._id} className={index % 2 === 0 ? "bg-white dark:bg-dark-card" : "bg-gray-50 dark:bg-dark-card/50"}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
+                                <div 
+                                    className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
+                                    onClick={() => {
+                                        setSelectedProductForDetail(product);
+                                        setIsDetailModalOpen(true);
+                                    }}
+                                >
                                     {product.name}
                                 </div>
                             </td>
@@ -423,7 +438,13 @@ export function LiveStock({
                     filteredProducts.map((product: any, index: number) => (
                         <tr key={product._id} className={index % 2 === 0 ? "bg-white dark:bg-dark-card" : "bg-gray-50 dark:bg-dark-card/50"}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
+                                <div 
+                                    className="text-sm font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
+                                    onClick={() => {
+                                        setSelectedProductForDetail(product);
+                                        setIsDetailModalOpen(true);
+                                    }}
+                                >
                                     {product.name}
                                 </div>
                             </td>
@@ -1315,6 +1336,15 @@ export function LiveStock({
                     </div>
                 </div>
             </Modal>
+            {/* Product Detail Modal */}
+            <ProductDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                product={selectedProductForDetail}
+                categoryName={getCategoryName(selectedProductForDetail?.category_id || selectedProductForDetail?.product_id)}
+                onEdit={openEditModal}
+                onDelete={handleDeleteClick}
+            />
         </div>
     );
 }
