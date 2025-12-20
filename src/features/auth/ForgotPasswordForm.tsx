@@ -25,26 +25,27 @@ export function ForgotPasswordForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
     };
 
     return (
-        <div className="bg-white dark:bg-dark-card rounded-xl shadow-sm p-6">
-            <div className="mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text text-center">
-                    Reset Password
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">
-                    Enter your email to receive a password reset link
-                </p>
+        <div className="bg-white dark:bg-dark-card rounded-2xl shadow-lg p-8 max-w-md w-full mx-auto">
+            <div className="text-center mb-8">
+                <div className="mx-auto bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text">Reset Password</h2>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Enter your email to receive a password reset link</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="email" className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-2">
                         Business Email
                     </label>
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        className="auth-input-field text-sm dark:bg-dark-card dark:text-dark-text dark:border-dark-border"
+                        className="auth-input-field text-base dark:bg-dark-card dark:text-dark-text dark:border-dark-border w-full px-4 py-3 rounded-lg"
                         placeholder="your@business.com"
                         required
                     />
@@ -52,20 +53,20 @@ export function ForgotPasswordForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
 
                 <button
                     type="submit"
-                    className="auth-button text-sm py-2"
+                    className="auth-button text-base py-3 rounded-lg w-full font-semibold transition-all duration-200 hover:shadow-md"
                     disabled={loading}
                 >
                     {loading
-                        ? "Sending..."
+                        ? "Sending Reset Link..."
                         : "Send Reset Link"}
                 </button>
             </form>
 
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
                 <button
                     type="button"
                     onClick={onSwitchToSignIn}
-                    className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                    className="text-sm text-primary hover:text-primary-hover dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                 >
                     Back to Sign In
                 </button>
