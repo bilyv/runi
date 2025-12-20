@@ -43,7 +43,7 @@ const menuGroups = [
   {
     label: "System",
     items: [
-      { id: "users" as const, label: "Users", icon: UserCheck },
+      { id: "staff" as const, label: "Staff", icon: UserCheck },
       { id: "settings" as const, label: "Settings", icon: SettingsIcon },
     ]
   }
@@ -57,7 +57,7 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
             <img src="/logo.svg" alt="Runi Logo" className="w-5 h-5 invert brightness-0" />
           </div>
-            <h1 className="text-lg font-display font-bold tracking-tight text-gray-900 dark:text-white">Runi</h1>
+          <h1 className="text-lg font-display font-bold tracking-tight text-gray-900 dark:text-white">Runi</h1>
 
         </div>
       </div>
@@ -77,25 +77,21 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
                   <button
                     key={module.id}
                     onClick={() => onModuleChange(module.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 group relative ${
-                      isActive
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 group relative ${isActive
                         ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
                         : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200"
-                    }`}
+                      }`}
                   >
                     <Icon
                       size={18}
                       strokeWidth={isActive ? 2.5 : 2}
-                      className={`transition-all duration-200 ${
-                        isActive 
-                          ? "scale-110" 
+                      className={`transition-all duration-200 ${isActive
+                          ? "scale-110"
                           : "group-hover:scale-110 group-hover:text-gray-600 dark:group-hover:text-gray-300"
-                      }`}
+                        }`}
                     />
-                      <span className={`text-sm font-sans font-medium transition-colors ${
-
-                      isActive ? "opacity-100" : "opacity-90 group-hover:opacity-100"
-                    }`}>
+                    <span className={`text-sm font-sans font-medium transition-colors ${isActive ? "opacity-100" : "opacity-90 group-hover:opacity-100"
+                      }`}>
                       {module.label}
                     </span>
                     {isActive && (
@@ -115,7 +111,8 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }

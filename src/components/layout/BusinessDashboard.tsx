@@ -18,7 +18,7 @@ export type ModuleType =
   | "expenses"
   | "documents"
   | "reports"
-  | "users"
+  | "staff"
   | "settings"
   | "transactions";
 
@@ -51,7 +51,7 @@ export function BusinessDashboard() {
       "expenses",
       "documents",
       "reports",
-      "users",
+      "staff",
       "settings",
       "transactions"
     ];
@@ -72,7 +72,7 @@ export function BusinessDashboard() {
         return <Documents />;
       case "reports":
         return <Reports />;
-      case "users":
+      case "staff":
         return <Users />;
       case "settings":
         return <Settings />;
@@ -85,7 +85,7 @@ export function BusinessDashboard() {
 
   // Bottom navigation items for mobile
   const bottomNavItems = [
-    { id: "dashboard", label: "Home", icon: BarChart3 },
+    { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "products", label: "Products", icon: Package },
     { id: "expenses", label: "Expenses", icon: Receipt },
     { id: "documents", label: "Documents", icon: FileText },
