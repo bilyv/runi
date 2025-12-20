@@ -871,7 +871,7 @@ export function LiveStock({
     // Handle approval of product deletion
     const handleApproveDeletion = async (movementId: string, productId: string) => {
         try {
-            await approveProductDeletion({ movement_id: movementId, product_id: productId });
+            await approveProductDeletion({ movement_id: movementId, product_id: productId as any });
             alert("Product deletion approved successfully!");
         } catch (error: any) {
             console.error("Error approving deletion:", error);
@@ -893,7 +893,7 @@ export function LiveStock({
     // Handle approval of product edit
     const handleApproveEdit = async (movementId: string, productId: string) => {
         try {
-            await approveProductEdit({ movement_id: movementId, product_id: productId });
+            await approveProductEdit({ movement_id: movementId, product_id: productId as any });
             alert("Product edit approved successfully!");
         } catch (error: any) {
             console.error("Error approving edit:", error);
@@ -1326,7 +1326,7 @@ export function LiveStock({
                                 Cancel
                             </Button>
                             <Button 
-                                variant="destructive" 
+                                variant="danger" 
                                 size="sm"
                                 onClick={handleDeleteProductSubmit}
                             >
