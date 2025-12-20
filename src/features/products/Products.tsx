@@ -73,57 +73,58 @@ export function Products() {
     return "animate-fadeIn";
   };
 
-  return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text">Product Inventory</h1>
+    return (
+    <div className="p-4 md:p-8 space-y-8 bg-gray-50/50 dark:bg-dark-bg/50 min-h-full">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+            Product Inventory
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 font-sans text-sm mt-1">
+            Manage your stock, categories and inventory levels
+          </p>
+        </div>
       </div>
 
-      {/* Sub-Tabs Navigation */}
-      <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border overflow-hidden">
-        <div className="flex border-b border-gray-200 dark:border-dark-border">
+      {/* Sub-Tabs Navigation - Modern Pill Style */}
+      <div className="space-y-6">
+        <div className="flex p-1 bg-gray-100 dark:bg-dark-card/50 rounded-2xl w-fit border border-gray-200 dark:border-dark-border backdrop-blur-sm">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id as TabType)}
-              className={`px-6 py-4 text-sm font-medium relative transition-all duration-300 ease-in-out ${activeTab === tab.id
-                ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/10"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-card/50"
+              className={`px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ease-out flex items-center gap-2 ${activeTab === tab.id
+                ? "bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-sm ring-1 ring-gray-200 dark:ring-blue-500/50"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                 }`}
-              style={{
-                borderTopLeftRadius: tab.id === tabs[0].id ? '0.75rem' : '0',
-                borderTopRightRadius: tab.id === tabs[tabs.length - 1].id ? '0.75rem' : '0'
-              }}
             >
               {tab.label}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-300" />
-              )}
             </button>
           ))}
         </div>
 
-        {/* Tab Content with Slide Animation */}
-        <div className="p-6 overflow-hidden">
-          <div className={`${getAnimationClass("category")}`}>
-            <ProductCategory
-              categories={categories}
-              onAddCategory={() => setShowCategoryModal(true)}
-              onEditCategory={setEditingCategory}
-              onDeleteCategory={handleDeleteCategory}
-            />
-          </div>
-          <div className={`${getAnimationClass("adding")}`}>
-            <ProductAdding
-            />
-          </div>
-          <div className={`${getAnimationClass("liveStock")}`}>
-            <LiveStock
-              search={search}
-              setSearch={setSearch}
-              products={products || []}
-              categories={categories}
-            />
+        {/* Tab Content with Smooth Transitions */}
+        <div className="bg-white dark:bg-dark-card rounded-3xl border border-gray-200 dark:border-dark-border shadow-sm overflow-hidden min-h-[400px]">
+          <div className="overflow-hidden">
+            <div className={`${getAnimationClass("category")}`}>
+              <ProductCategory
+                categories={categories}
+                onAddCategory={() => setShowCategoryModal(true)}
+                onEditCategory={setEditingCategory}
+                onDeleteCategory={handleDeleteCategory}
+              />
+            </div>
+            <div className={`${getAnimationClass("adding")}`}>
+              <ProductAdding />
+            </div>
+            <div className={`${getAnimationClass("liveStock")}`}>
+              <LiveStock
+                search={search}
+                setSearch={setSearch}
+                products={products || []}
+                categories={categories}
+              />
+            </div>
           </div>
         </div>
       </div>
