@@ -65,7 +65,7 @@ export function SignInForm({ onSwitchToSignUp, onSwitchToForgotPassword }: { onS
                     <button
                         type="button"
                         onClick={onSwitchToForgotPassword}
-                        className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                        className="text-xs text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium"
                     >
                         Forgot Password?
                     </button>
@@ -86,7 +86,7 @@ export function SignInForm({ onSwitchToSignUp, onSwitchToForgotPassword }: { onS
                 <button
                     type="button"
                     onClick={onSwitchToSignUp}
-                    className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                    className="text-xs text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium"
                 >
                     Don't have an account? Sign up
                 </button>

@@ -23,13 +23,13 @@ export function SubTabs({ tabs, activeTab, onChange, className = "" }: SubTabsPr
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className={`
-                relative px-6 py-2.5 text-sm font-semibold transition-all duration-500 rounded-xl font-display tracking-tight
-                ${isActive 
-                  ? "text-blue-600 dark:text-blue-400" 
-                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                }
-              `}
+                className={`
+                  relative px-6 py-2.5 text-sm font-semibold transition-all duration-500 rounded-xl font-display tracking-tight
+                  ${isActive 
+                    ? "text-primary dark:text-primary" 
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                  }
+                `}
             >
               {isActive && (
                 <motion.div

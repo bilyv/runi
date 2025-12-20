@@ -80,8 +80,8 @@ export function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="flex items-center gap-2 p-1 hover:bg-gray-100 dark:hover:bg-dark-card rounded-full transition-all"
                     >
-                        <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                            <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                        <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                                 {initials}
                             </span>
                         </div>
