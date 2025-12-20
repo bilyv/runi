@@ -67,51 +67,49 @@ export function AddCategoryModal({ isOpen, onClose, category }: AddCategoryModal
             onClose={handleClose}
             title={category ? "Edit Category" : "Add Category"}
         >
-            <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
-                <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
-                    {/* Header */}
-                    <div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">
-                            {category ? "Edit Category" : "Add Category"}
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden border border-emerald-500/10">
+                <div className="p-8 space-y-6">
+                    <div className="space-y-1">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text font-display">
+                            {category ? "Update Category" : "New Category"}
                         </h2>
+                        <p className="text-sm text-gray-500">
+                            Organize your products by grouping them into meaningful categories.
+                        </p>
                     </div>
                     
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-3">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                                    Category Name <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={categoryName}
-                                    onChange={(e) => setCategoryName(e.target.value)}
-                                    className="w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors"
-                                    placeholder="Enter category name"
-                                    disabled={isSubmitting}
-                                />
-                            </div>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                                Category Name
+                            </label>
+                            <Input
+                                value={categoryName}
+                                onChange={(e) => setCategoryName(e.target.value)}
+                                placeholder="e.g. Rice, Spices, Beverages"
+                                disabled={isSubmitting}
+                                className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
+                            />
                         </div>
                         
-                        <div className="flex justify-end gap-2 pt-2">
+                        <div className="flex justify-end gap-3 pt-4 border-t border-emerald-500/10">
                             <Button
                                 type="button"
                                 variant="secondary"
-                                size="sm"
                                 onClick={handleClose}
                                 disabled={isSubmitting}
+                                className="px-6 h-12 rounded-xl"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
-                                variant="primary"
-                                size="sm"
                                 disabled={isSubmitting}
+                                className="px-10 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold uppercase tracking-wider text-xs transition-all active:scale-95"
                             >
                                 {isSubmitting
                                     ? (category ? "Updating..." : "Creating...")
-                                    : (category ? "Update Category" : "Create Category")
+                                    : (category ? "Update Category" : "Confirm & Create")
                                 }
                             </Button>
                         </div>

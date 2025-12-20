@@ -7,19 +7,19 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
-        colors: {
-          primary: {
-            DEFAULT: '#10b981',
-            hover: '#059669',
-          },
-          secondary: '#64748b',
-          dark: {
-            bg: '#0a0a0a',
-            card: '#141414',
-            border: '#262626',
-            text: '#fafafa',
-          }
+      colors: {
+        primary: {
+          DEFAULT: '#3b82f6',
+          hover: '#2563eb',
         },
+        secondary: '#64748b',
+        dark: {
+          bg: '#1e1e1e',
+          card: '#2d2d2d',
+          border: '#3d3d3d',
+          text: '#e0e0e0',
+        }
+      },
       spacing: {
         'section': '2rem',
       },

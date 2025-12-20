@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Plus, PackagePlus, ArchiveRestore, AlertTriangle, Edit3 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
 import { Input } from "../../components/ui/Input";
@@ -435,714 +436,508 @@ export function ProductAdding({}: ProductAddingProps) {
     }
   };
   
-  return (
-    <div className="space-y-6">
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border flex flex-col items-center text-center">
-          <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-3">
-            <PackagePlus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-          </div>
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Add New Product</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Create and register a new product in your inventory
-          </p>
-          <Button 
-            variant="secondary" 
-            className="w-full text-sm"
+    return (
+      <div className="space-y-10">
+        {/* Quick Action Bars */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.button 
+            whileHover={{ y: -4 }}
             onClick={() => setIsAddProductOpen(true)}
+            className="group relative overflow-hidden bg-white dark:bg-dark-card/50 p-6 rounded-2xl border border-emerald-500/10 hover:border-emerald-500/30 shadow-sm transition-all text-left"
           >
-            Add Product
-          </Button>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border flex flex-col items-center text-center">
-          <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full mb-3">
-            <ArchiveRestore className="h-6 w-6 text-green-600 dark:text-green-400" />
-          </div>
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Restock</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Increase quantity of existing products in stock
-          </p>
-          <Button 
-            variant="secondary" 
-            className="w-full text-sm"
-            onClick={() => setIsRestockOpen(true)}
-          >
-            Restock Items
-          </Button>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border flex flex-col items-center text-center">
-          <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full mb-3">
-            <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
-          </div>
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Record Damaged</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Log products that are damaged or unusable
-          </p>
-          <Button 
-            variant="secondary" 
-            className="w-full text-sm"
-            onClick={() => setIsRecordDamagedOpen(true)}
-          >
-            Record Damage
-          </Button>
-        </div>
-
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4 border border-gray-200 dark:border-dark-border flex flex-col items-center text-center">
-          <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-3">
-            <Edit3 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-          </div>
-          <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">Stock Correction</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Adjust stock quantities for accuracy and corrections
-          </p>
-          <Button 
-            variant="secondary" 
-            className="w-full text-sm"
-            onClick={() => setIsStockCorrectionOpen(true)}
-          >
-            Correct Stock
-          </Button>
-        </div>
-      </div>
-      
-      {/* Add New Product Modal */}
-      <Modal 
-        isOpen={isAddProductOpen} 
-        onClose={() => setIsAddProductOpen(false)} 
-        title="Add New Product"
-      >
-        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
-          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
-            {/* Header */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Add New Product</h2>
+            <div className="flex flex-col gap-4">
+              <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                <PackagePlus size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-display">New Product</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Register a new item in your inventory catalog.</p>
+              </div>
             </div>
-            
-            {/* Product Details Form */}
-            <div className="space-y-4">
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Product Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={addProductForm.name}
-                    onChange={(e) => handleAddProductChange('name', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.name ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                    placeholder="Enter product name"
-                  />
-                  {errors.name && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.name}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Category <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={addProductForm.category_id}
-                    onChange={(e) => handleAddProductChange('category_id', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.category_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map(category => (
-                      <option key={category._id} value={category._id}>
-                        {category.category_name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category_id && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.category_id}</p>
-                  )}
-                </div>
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Plus size={16} className="text-emerald-500" />
+            </div>
+          </motion.button>
+
+          <motion.button 
+            whileHover={{ y: -4 }}
+            onClick={() => setIsRestockOpen(true)}
+            className="group relative overflow-hidden bg-white dark:bg-dark-card/50 p-6 rounded-2xl border border-emerald-500/10 hover:border-emerald-500/30 shadow-sm transition-all text-left"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300">
+                <ArchiveRestore size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-display">Restock</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Increase quantity of existing products in stock.</p>
+              </div>
+            </div>
+          </motion.button>
+
+          <motion.button 
+            whileHover={{ y: -4 }}
+            onClick={() => setIsRecordDamagedOpen(true)}
+            className="group relative overflow-hidden bg-white dark:bg-dark-card/50 p-6 rounded-2xl border border-red-500/10 hover:border-red-500/30 shadow-sm transition-all text-left"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="h-12 w-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all duration-300">
+                <AlertTriangle size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-display text-red-600 dark:text-red-400">Record Damage</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Log items that are damaged or unusable.</p>
+              </div>
+            </div>
+          </motion.button>
+
+          <motion.button 
+            whileHover={{ y: -4 }}
+            onClick={() => setIsStockCorrectionOpen(true)}
+            className="group relative overflow-hidden bg-white dark:bg-dark-card/50 p-6 rounded-2xl border border-amber-500/10 hover:border-amber-500/30 shadow-sm transition-all text-left"
+          >
+            <div className="flex flex-col gap-4">
+              <div className="h-12 w-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                <Edit3 size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-display text-amber-600 dark:text-amber-400">Correction</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Adjust quantities for accuracy and audit.</p>
+              </div>
+            </div>
+          </motion.button>
+        </div>
+        
+        {/* Add New Product Modal */}
+        <Modal 
+          isOpen={isAddProductOpen} 
+          onClose={() => setIsAddProductOpen(false)} 
+          title="Create New Product"
+        >
+          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden border border-emerald-500/10">
+            <div className="p-8 space-y-6 max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text font-display">New Product</h2>
+                <p className="text-sm text-gray-500">Fill in the details to add a new item to your catalog.</p>
               </div>
               
-              {/* Quantity & Measurement */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Quantity & Measurement</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Boxed Qty
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Product Name
                     </label>
-                    <input
-                      type="number"
-                      value={addProductForm.quantity_box}
-                      onChange={(e) => handleAddProductChange('quantity_box', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.quantity_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Boxes"
+                    <Input
+                      value={addProductForm.name}
+                      onChange={(e) => handleAddProductChange('name', e.target.value)}
+                      placeholder="e.g. Premium Basmati Rice"
+                      className={`h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50 ${errors.name ? "border-red-500 focus:border-red-500" : ""}`}
                     />
-                    {errors.quantity_box && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.quantity_box}</p>
-                    )}
+                    {errors.name && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase ml-1">{errors.name}</p>}
                   </div>
                   
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Box to Kg <span className="text-red-500">*</span>
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Category
                     </label>
-                    <input
-                      type="number"
-                      value={addProductForm.box_to_kg_ratio}
-                      onChange={(e) => handleAddProductChange('box_to_kg_ratio', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.box_to_kg_ratio ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Ratio"
-                    />
-                    {errors.box_to_kg_ratio && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.box_to_kg_ratio}</p>
-                    )}
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Weight (kg)
-                    </label>
-                    <input
-                      type="number"
-                      value={addProductForm.weight}
-                      onChange={(e) => handleAddProductChange('weight', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.weight ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Kg"
-                    />
-                    {errors.weight && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.weight}</p>
-                    )}
+                    <select
+                      value={addProductForm.category_id}
+                      onChange={(e) => handleAddProductChange('category_id', e.target.value)}
+                      className={`w-full h-12 px-4 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-emerald-500/10 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all dark:text-dark-text appearance-none ${errors.category_id ? "border-red-500 focus:border-red-500" : ""}`}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map(category => (
+                        <option key={category._id} value={category._id}>{category.category_name}</option>
+                      ))}
+                    </select>
+                    {errors.category_id && <p className="mt-1 text-[10px] text-red-500 font-bold uppercase ml-1">{errors.category_id}</p>}
                   </div>
                 </div>
-              </div>
-              
-              {/* Cost Pricing */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Cost Pricing</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Cost per Box ($) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      value={addProductForm.cost_per_box}
-                      onChange={(e) => handleAddProductChange('cost_per_box', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.cost_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="$0.00"
-                    />
-                    {errors.cost_per_box && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.cost_per_box}</p>
-                    )}
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Cost per Kg ($)
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">$</span>
-                      <input
+
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                        Initial Stock (Boxes)
+                      </label>
+                      <Input
                         type="number"
-                        value={addProductForm.cost_per_box && addProductForm.box_to_kg_ratio ? 
-                          (Number(addProductForm.cost_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
-                        readOnly
-                        className="w-full pl-5 px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
-                        placeholder="Auto"
+                        value={addProductForm.quantity_box}
+                        onChange={(e) => handleAddProductChange('quantity_box', e.target.value)}
+                        placeholder="0"
+                        className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                        Box:KG Ratio
+                      </label>
+                      <Input
+                        type="number"
+                        value={addProductForm.box_to_kg_ratio}
+                        onChange={(e) => handleAddProductChange('box_to_kg_ratio', e.target.value)}
+                        placeholder="1:25"
+                        className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-              
-              {/* Selling Pricing */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Selling Pricing</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Sell per Box ($) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      value={addProductForm.sell_price_per_box}
-                      onChange={(e) => handleAddProductChange('sell_price_per_box', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.sell_price_per_box ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="$0.00"
-                    />
-                    {errors.sell_price_per_box && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.sell_price_per_box}</p>
-                    )}
-                  </div>
                   
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Sell per Kg ($)
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Expiry Date
                     </label>
-                    <div className="relative">
-                      <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">$</span>
-                      <input
-                        type="number"
-                        value={addProductForm.sell_price_per_box && addProductForm.box_to_kg_ratio ? 
-                          (Number(addProductForm.sell_price_per_box) / Number(addProductForm.box_to_kg_ratio)).toFixed(2) : ''}
-                        readOnly
-                        className="w-full pl-5 px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors bg-gray-100 dark:bg-dark-bg/50 cursor-not-allowed"
-                        placeholder="Auto"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Stock & Expiry */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-dark-text">Stock & Expiry</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Low Stock Alert
-                    </label>
-                    <input
-                      type="number"
-                      value={addProductForm.low_stock_alert}
-                      onChange={(e) => handleAddProductChange('low_stock_alert', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.low_stock_alert ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Threshold"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Expiry Date <span className="text-red-500">*</span>
-                    </label>
-                    <input
+                    <Input
                       type="date"
                       value={addProductForm.expiry_date}
                       onChange={(e) => handleAddProductChange('expiry_date', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
+                      className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.expiry_date && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.expiry_date}</p>
-                    )}
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 pt-2">
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={() => setIsAddProductOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm"
-                onClick={handleAddProductSubmit}
-              >
-                Save Product
-              </Button>
+
+              <div className="bg-emerald-500/5 p-6 rounded-2xl border border-emerald-500/10 space-y-4">
+                <h3 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Pricing Configuration</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Cost / Box</label>
+                    <Input
+                      type="number"
+                      value={addProductForm.cost_per_box}
+                      onChange={(e) => handleAddProductChange('cost_per_box', e.target.value)}
+                      placeholder="$0.00"
+                      className="h-11 border-emerald-500/10 focus:border-emerald-500/30 bg-white dark:bg-dark-card"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Sell / Box</label>
+                    <Input
+                      type="number"
+                      value={addProductForm.sell_price_per_box}
+                      onChange={(e) => handleAddProductChange('sell_price_per_box', e.target.value)}
+                      placeholder="$0.00"
+                      className="h-11 border-emerald-500/10 focus:border-emerald-500/30 bg-white dark:bg-dark-card font-bold text-emerald-600 dark:text-emerald-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Alert Threshold</label>
+                    <Input
+                      type="number"
+                      value={addProductForm.low_stock_alert}
+                      onChange={(e) => handleAddProductChange('low_stock_alert', e.target.value)}
+                      placeholder="5"
+                      className="h-11 border-emerald-500/10 focus:border-emerald-500/30 bg-white dark:bg-dark-card"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 ml-1">Expected Profit</label>
+                    <div className="h-11 flex items-center px-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-700 dark:text-emerald-400 font-bold tabular-nums">
+                      ${(Number(addProductForm.sell_price_per_box) - Number(addProductForm.cost_per_box)).toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3 pt-4 border-t border-emerald-500/10">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setIsAddProductOpen(false)}
+                  className="px-6 h-12 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleAddProductSubmit}
+                  className="px-10 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold uppercase tracking-wider text-xs transition-all active:scale-95"
+                >
+                  Confirm & Create
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
       
-      {/* Restock Modal */}
-      <Modal 
-        isOpen={isRestockOpen} 
-        onClose={() => setIsRestockOpen(false)} 
-        title="Restock Product"
-      >
-        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
-          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
-            {/* Header */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Restock Product</h2>
-            </div>
-            
-            {/* Restock Form */}
-            <div className="space-y-4">
-              <div className="space-y-3">
+        {/* Restock Modal */}
+        <Modal 
+          isOpen={isRestockOpen} 
+          onClose={() => setIsRestockOpen(false)} 
+          title="Restock Products"
+        >
+          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden border border-emerald-500/10">
+            <div className="p-8 space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text font-display">Restock Inventory</h2>
+                <p className="text-sm text-gray-500">Add new units to an existing product in your catalog.</p>
+              </div>
+              
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Product <span className="text-red-500">*</span>
+                  <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                    Select Product
                   </label>
                   <select
                     value={restockForm.product_id}
                     onChange={(e) => handleRestockChange('product_id', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
+                    className={`w-full h-12 px-4 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-emerald-500/10 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/30 transition-all dark:text-dark-text appearance-none ${errors.product_id ? "border-red-500 focus:border-red-500" : ""}`}
                   >
-                    <option value="">Select a product</option>
+                    <option value="">Choose a product...</option>
                     {products.map(product => (
-                      <option key={product._id} value={product._id}>
-                        {product.name}
-                      </option>
+                      <option key={product._id} value={product._id}>{product.name}</option>
                     ))}
                   </select>
-                  {errors.product_id && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
-                  )}
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Boxes Amount
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Boxes to Add
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={restockForm.boxes_amount}
                       onChange={(e) => handleRestockChange('boxes_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Boxes"
+                      placeholder="0"
+                      className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.boxes_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
-                    )}
                   </div>
-                  
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Kg Amount
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      KG to Add
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={restockForm.kg_amount}
                       onChange={(e) => handleRestockChange('kg_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Kg"
+                      placeholder="0"
+                      className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.kg_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
-                    )}
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
                       Delivery Date
                     </label>
-                    <input
+                    <Input
                       type="date"
                       value={restockForm.delivery_date}
                       onChange={(e) => handleRestockChange('delivery_date', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.delivery_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
+                      className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.delivery_date && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.delivery_date}</p>
-                    )}
                   </div>
-                  
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Expiry Date
+                    <label className="block text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Batch Expiry
                     </label>
-                    <input
+                    <Input
                       type="date"
                       value={restockForm.expiry_date}
                       onChange={(e) => handleRestockChange('expiry_date', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.expiry_date ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
+                      className="h-12 border-emerald-500/10 focus:border-emerald-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.expiry_date && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.expiry_date}</p>
-                    )}
                   </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 pt-2">
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={() => setIsRestockOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm"
-                onClick={handleRestockSubmit}
-              >
-                Record Restock
-              </Button>
+              
+              <div className="flex justify-end gap-3 pt-4 border-t border-emerald-500/10">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setIsRestockOpen(false)}
+                  className="px-6 h-12 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleRestockSubmit}
+                  className="px-10 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 font-bold uppercase tracking-wider text-xs transition-all"
+                >
+                  Confirm Restock
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
-      
-      {/* Record Damaged Modal */}
-      <Modal 
-        isOpen={isRecordDamagedOpen} 
-        onClose={() => setIsRecordDamagedOpen(false)} 
-        title="Record Damaged Product"
-      >
-        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
-          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
-            {/* Header */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Record Damaged Product</h2>
-            </div>
-            
-            {/* Record Damaged Form */}
-            <div className="space-y-4">
-              <div className="space-y-3">
+        </Modal>
+        
+        {/* Record Damaged Modal */}
+        <Modal 
+          isOpen={isRecordDamagedOpen} 
+          onClose={() => setIsRecordDamagedOpen(false)} 
+          title="Report Damage"
+        >
+          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden border border-red-500/10">
+            <div className="p-8 space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text font-display text-red-600">Report Damage</h2>
+                <p className="text-sm text-gray-500">Record inventory losses due to damage or expiration.</p>
+              </div>
+              
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Product <span className="text-red-500">*</span>
+                  <label className="block text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-1.5 ml-1">
+                    Affected Product
                   </label>
                   <select
                     value={recordDamagedForm.product_id}
                     onChange={(e) => handleRecordDamagedChange('product_id', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
+                    className={`w-full h-12 px-4 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-red-500/10 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500/30 transition-all dark:text-dark-text appearance-none ${errors.product_id ? "border-red-500" : ""}`}
                   >
-                    <option value="">Select a product</option>
+                    <option value="">Choose a product...</option>
                     {products.map(product => (
-                      <option key={product._id} value={product._id}>
-                        {product.name}
-                      </option>
+                      <option key={product._id} value={product._id}>{product.name}</option>
                     ))}
                   </select>
-                  {errors.product_id && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
-                  )}
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Boxes Amount
+                    <label className="block text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Damaged Boxes
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={recordDamagedForm.boxes_amount}
                       onChange={(e) => handleRecordDamagedChange('boxes_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Boxes"
+                      placeholder="0"
+                      className="h-12 border-red-500/10 focus:border-red-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.boxes_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
-                    )}
                   </div>
-                  
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Kg Amount
+                    <label className="block text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Damaged KG
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={recordDamagedForm.kg_amount}
                       onChange={(e) => handleRecordDamagedChange('kg_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Kg"
+                      placeholder="0"
+                      className="h-12 border-red-500/10 focus:border-red-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.kg_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
-                    )}
                   </div>
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Reason <span className="text-red-500">*</span>
+                  <label className="block text-xs font-bold text-red-700 dark:text-red-400 uppercase tracking-wider mb-1.5 ml-1">
+                    Reason for Loss
                   </label>
                   <textarea
                     value={recordDamagedForm.reason}
                     onChange={(e) => handleRecordDamagedChange('reason', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
+                    placeholder="Describe how the damage occurred..."
                     rows={3}
-                    placeholder="Describe the damage reason"
+                    className="w-full px-4 py-3 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-red-500/10 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500/30 transition-all dark:text-dark-text"
                   />
-                  {errors.reason && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.reason}</p>
-                  )}
                 </div>
               </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 pt-2">
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={() => setIsRecordDamagedOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm"
-                onClick={handleRecordDamagedSubmit}
-              >
-                Record Damage
-              </Button>
+              
+              <div className="flex justify-end gap-3 pt-4 border-t border-red-500/10">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setIsRecordDamagedOpen(false)}
+                  className="px-6 h-12 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleRecordDamagedSubmit}
+                  className="px-10 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 font-bold uppercase tracking-wider text-xs transition-all"
+                >
+                  Record Loss
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
-      
-      {/* Stock Correction Modal */}
-      <Modal 
-        isOpen={isStockCorrectionOpen} 
-        onClose={() => setIsStockCorrectionOpen(false)} 
-        title="Stock Correction"
-      >
-        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden">
-          <div className="p-4 space-y-5 max-h-[70vh] overflow-y-auto">
-            {/* Header */}
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-dark-text">Stock Correction</h2>
-            </div>
-            
-            {/* Stock Correction Form */}
-            <div className="space-y-4">
-              <div className="space-y-3">
+        </Modal>
+        
+        {/* Stock Correction Modal */}
+        <Modal 
+          isOpen={isStockCorrectionOpen} 
+          onClose={() => setIsStockCorrectionOpen(false)} 
+          title="Manual Correction"
+        >
+          <div className="bg-white dark:bg-dark-card rounded-2xl shadow-2xl overflow-hidden border border-amber-500/10">
+            <div className="p-8 space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-dark-text font-display text-amber-600">Inventory Correction</h2>
+                <p className="text-sm text-gray-500">Manually adjust stock levels to match physical audit results.</p>
+              </div>
+              
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Product <span className="text-red-500">*</span>
+                  <label className="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5 ml-1">
+                    Select Product
                   </label>
                   <select
                     value={stockCorrectionForm.product_id}
                     onChange={(e) => handleStockCorrectionChange('product_id', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.product_id ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
+                    className="w-full h-12 px-4 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-amber-500/10 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/30 transition-all dark:text-dark-text appearance-none"
                   >
-                    <option value="">Select a product</option>
+                    <option value="">Choose a product...</option>
                     {products.map(product => (
-                      <option key={product._id} value={product._id}>
-                        {product.name}
-                      </option>
+                      <option key={product._id} value={product._id}>{product.name}</option>
                     ))}
                   </select>
-                  {errors.product_id && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.product_id}</p>
-                  )}
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Boxes Amount
+                    <label className="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5 ml-1">
+                      Box Adjustment (+/-)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={stockCorrectionForm.boxes_amount}
                       onChange={(e) => handleStockCorrectionChange('boxes_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.boxes_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Boxes"
+                      placeholder="e.g. -2 or 5"
+                      className="h-12 border-amber-500/10 focus:border-amber-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.boxes_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.boxes_amount}</p>
-                    )}
                   </div>
-                  
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                      Kg Amount
+                    <label className="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5 ml-1">
+                      KG Adjustment (+/-)
                     </label>
-                    <input
+                    <Input
                       type="number"
                       value={stockCorrectionForm.kg_amount}
                       onChange={(e) => handleStockCorrectionChange('kg_amount', e.target.value)}
-                      className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                        errors.kg_amount ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                      }`}
-                      placeholder="Kg"
+                      placeholder="e.g. -10 or 25"
+                      className="h-12 border-amber-500/10 focus:border-amber-500/30 bg-gray-50 dark:bg-dark-bg/50"
                     />
-                    {errors.kg_amount && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.kg_amount}</p>
-                    )}
                   </div>
                 </div>
-                
+
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-dark-text mb-1">
-                    Reason <span className="text-red-500">*</span>
+                  <label className="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1.5 ml-1">
+                    Audit Notes
                   </label>
                   <textarea
                     value={stockCorrectionForm.reason}
                     onChange={(e) => handleStockCorrectionChange('reason', e.target.value)}
-                    className={`w-full px-2.5 py-1.5 text-sm border border-gray-300 dark:border-dark-border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg dark:text-dark-text transition-colors ${
-                      errors.reason ? "border-red-300 focus:ring-red-500 focus:border-red-500" : ""
-                    }`}
+                    placeholder="Explain the reason for this manual adjustment..."
                     rows={3}
-                    placeholder="Explain the reason for stock correction"
+                    className="w-full px-4 py-3 text-sm bg-gray-50 dark:bg-dark-bg/50 border border-amber-500/10 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/30 transition-all dark:text-dark-text"
                   />
-                  {errors.reason && (
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.reason}</p>
-                  )}
                 </div>
               </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-2 pt-2">
-              <Button 
-                variant="secondary" 
-                size="sm"
-                onClick={() => setIsStockCorrectionOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                size="sm"
-                onClick={handleStockCorrectionSubmit}
-              >
-                Apply Correction
-              </Button>
+              
+              <div className="flex justify-end gap-3 pt-4 border-t border-amber-500/10">
+                <Button 
+                  variant="secondary" 
+                  onClick={() => setIsStockCorrectionOpen(false)}
+                  className="px-6 h-12 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleStockCorrectionSubmit}
+                  className="px-10 h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 font-bold uppercase tracking-wider text-xs transition-all"
+                >
+                  Apply Changes
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
     </div>
   );
 }
