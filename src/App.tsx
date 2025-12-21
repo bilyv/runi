@@ -3,21 +3,24 @@ import { api } from "../convex/_generated/api";
 import { SignInForm } from "./features/auth/SignInForm";
 import { SignUpForm } from "./features/auth/SignUpForm";
 import { ForgotPasswordForm } from "./features/auth/ForgotPasswordForm";
-import { SignOutButton } from "./features/auth/SignOutButton";
 import { Toaster } from "sonner";
 import { BusinessDashboard } from "./components/layout/BusinessDashboard";
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 import { StaffLoginForm } from "./features/auth/StaffLoginForm";
 import { StaffDashboard } from "./features/staff/StaffDashboard";
 import { StaffDashboardSkeleton } from "./features/staff/StaffDashboardSkeleton";
+import NotFound from "./pages/NotFound";
 
-export default function App() {
-  const [authView, setAuthView] = useState<'signIn' | 'signUp' | 'forgotPassword' | 'staffLogin'>('signIn');
+function AppContent() {
+  const [authView, setAuthView] = useState<'signIn' | 'signUp' | 'forgotPassword'>('signIn');
   const [staffUser, setStaffUser] = useState<any | null>(null);
   const [staffToken, setStaffToken] = useState<string | null>(localStorage.getItem('staff_session_token'));
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Validate session if token exists
   const validatedStaff = useQuery(api.staff.validateSession, staffToken ? { token: staffToken } : "skip");
@@ -26,13 +29,21 @@ export default function App() {
   useEffect(() => {
     if (validatedStaff) {
       setStaffUser(validatedStaff);
+      // Valid session found, if we are on login OR root, go to dashboard
+      if (location.pathname === '/staff/login' || location.pathname === '/') {
+        navigate('/staff/dashboard', { replace: true });
+      }
     } else if (staffToken && validatedStaff === null) {
       // Token invalid or expired
       localStorage.removeItem('staff_session_token');
       setStaffToken(null);
       setStaffUser(null);
+      // If we were on dashboard, go to login
+      if (location.pathname.startsWith('/staff/dashboard')) {
+        navigate('/staff/login');
+      }
     }
-  }, [validatedStaff, staffToken]);
+  }, [validatedStaff, staffToken, location.pathname, navigate]);
 
   const AuthForm = () => {
     if (authView === 'signUp') {
@@ -41,44 +52,54 @@ export default function App() {
     if (authView === 'forgotPassword') {
       return <ForgotPasswordForm onSwitchToSignIn={() => setAuthView('signIn')} />;
     }
-    if (authView === 'staffLogin') {
-      return <StaffLoginForm
-        onSwitchToBusinessLogin={() => setAuthView('signIn')}
-        onLogin={(user) => setStaffUser(user)}
-      />;
-    }
     return <SignInForm
       onSwitchToSignUp={() => setAuthView('signUp')}
       onSwitchToForgotPassword={() => setAuthView('forgotPassword')}
-      onSwitchToStaffLogin={() => setAuthView('staffLogin')}
+      onSwitchToStaffLogin={() => navigate('/staff/login')}
     />;
   };
 
-  return (
-    <ThemeProvider>
-      {isStaffLoading ? (
-        <StaffDashboardSkeleton />
-      ) : (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg dark:to-dark-card dark:text-dark-text">
-          <Authenticated>
-            <Routes>
-              <Route path="/" element={<BusinessDashboard />} />
-              <Route path="/:module" element={<BusinessDashboard />} />
-            </Routes>
-          </Authenticated>
+  if (isStaffLoading) {
+    return <StaffDashboardSkeleton />;
+  }
 
-          <Unauthenticated>
-            {staffUser ? (
-              <StaffDashboard
-                staffUser={staffUser}
-                onLogout={() => {
-                  localStorage.removeItem('staff_session_token');
-                  setStaffToken(null);
-                  setStaffUser(null);
-                  setAuthView('staffLogin');
-                }}
-              />
-            ) : (
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg dark:to-dark-card dark:text-dark-text">
+      <Routes>
+        {/* Business/Admin Routes */}
+        {/* Staff Routes */}
+        <Route path="/staff/login" element={
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <StaffLoginForm
+              onSwitchToBusinessLogin={() => navigate('/')}
+              onLogin={(token) => setStaffToken(token)}
+            />
+          </div>
+        } />
+
+        <Route path="/staff/dashboard" element={
+          staffUser ? (
+            <StaffDashboard
+              staffUser={staffUser}
+              onLogout={() => {
+                localStorage.removeItem('staff_session_token');
+                setStaffToken(null);
+                setStaffUser(null);
+                navigate('/staff/login');
+              }}
+            />
+          ) : (
+            <Navigate to="/staff/login" replace />
+          )
+        } />
+
+        {/* Home / Login Route */}
+        <Route path="/" element={
+          <>
+            <Authenticated>
+              <BusinessDashboard />
+            </Authenticated>
+            <Unauthenticated>
               <div className="min-h-screen flex items-center justify-center p-4">
                 <div className="w-full max-w-md">
                   <div className="text-center mb-10">
@@ -93,12 +114,34 @@ export default function App() {
                   <AuthForm />
                 </div>
               </div>
-            )}
-          </Unauthenticated>
+            </Unauthenticated>
+          </>
+        } />
 
-          <Toaster position="top-right" richColors />
-        </div>
-      )}
+        {/* Business Sub-routes - ONLY match if authenticated */}
+        <Route path="/:module" element={
+          <>
+            <Authenticated>
+              <BusinessDashboard />
+            </Authenticated>
+            <Unauthenticated>
+              <NotFound />
+            </Unauthenticated>
+          </>
+        } />
+
+        {/* 404 Route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Toaster position="top-right" richColors />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }

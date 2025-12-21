@@ -1,20 +1,22 @@
 import { useState } from "react";
-import { toast } from "sonner";
-import { User, Lock, Mail, ChevronLeft, Loader2 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { toast } from "sonner";
+import { Loader2, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface StaffLoginFormProps {
     onSwitchToBusinessLogin: () => void;
-    onLogin: (user: any) => void;
+    onLogin: (token: string) => void;
 }
 
 export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginFormProps) {
-    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const staffLogin = useMutation(api.staff.login);
 
@@ -31,8 +33,13 @@ export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginF
             toast.success("Login successful");
             if (user.session_token) {
                 localStorage.setItem("staff_session_token", user.session_token);
+                // Update parent state immediately
+                onLogin(user.session_token);
             }
-            onLogin(user);
+
+            // Redirect to dashboard
+            navigate("/staff/dashboard");
+
         } catch (error: any) {
             toast.error(error.message || "Failed to login. Please check your credentials.");
             console.error(error);
@@ -42,49 +49,36 @@ export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginF
     };
 
     return (
-        <div className="bg-white dark:bg-dark-card rounded-3xl shadow-xl p-8 max-w-md w-full mx-auto border border-gray-100 dark:border-white/5">
-            <div className="text-center mb-8">
+        <div className="w-full max-w-md mx-auto p-8 bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-xl border border-gray-100 dark:border-white/5">
+            <div className="flex items-center gap-2 mb-8">
                 <button
                     onClick={onSwitchToBusinessLogin}
-                    className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors mb-6 group"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors group"
                 >
-                    <ChevronLeft size={16} className="transition-transform group-hover:-translate-x-0.5" />
-                    Back to Business Login
+                    <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors" />
                 </button>
-
-                <div className="mx-auto bg-blue-50 dark:bg-blue-500/10 w-20 h-20 rounded-3xl flex items-center justify-center mb-4 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-                    <div className="bg-blue-600 rounded-2xl p-3 shadow-lg shadow-blue-500/30">
-                        <User className="h-8 w-8 text-white" />
-                    </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-display">Staff Login</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Access your terminal</p>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-dark-text font-display">Staff Login</h2>
-                <p className="text-gray-500 dark:text-gray-400 mt-2 font-sans">Enter your credentials to access your terminal</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <Input
-                    label="Staff Email"
-                    placeholder="staff@runi.com"
-                    type="email"
-                    icon={<Mail size={18} />}
-                    required
-                    disabled={loading}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <div className="space-y-1">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">Email Address</label>
                     <Input
-                        label="Password"
-                        type="password"
-                        placeholder="••••••••"
-                        icon={<Lock size={18} />}
+                        type="email"
+                        placeholder="staff@runi.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
-                        disabled={loading}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full h-12"
                     />
-                    <div className="flex justify-end">
+                </div>
+
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center ml-1">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                         <button
                             type="button"
                             className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 transition-colors"
@@ -92,12 +86,20 @@ export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginF
                             Forgot Password?
                         </button>
                     </div>
+                    <Input
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full h-12"
+                    />
                 </div>
 
                 <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/20 active:scale-95 transition-all"
+                    className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/20 active:scale-95 transition-all mt-2"
                 >
                     {loading ? (
                         <div className="flex items-center gap-2">
@@ -112,7 +114,7 @@ export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginF
 
             <div className="mt-8 text-center border-t border-gray-100 dark:border-white/5 pt-6">
                 <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold">
-                    Secure Internal Access
+                    Secure Internal Access Only
                 </p>
             </div>
         </div>
