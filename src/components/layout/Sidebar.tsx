@@ -29,7 +29,7 @@ const menuGroups = [
   {
     label: "Finance",
     items: [
-      { id: "transactions" as const, label: "Transactions", icon: Banknote },
+      { id: "cash-tracking" as const, label: "Cash Tracking", icon: Banknote },
       { id: "expenses" as const, label: "Expenses", icon: Receipt },
     ]
   },
@@ -78,16 +78,16 @@ export function Sidebar({ activeModule, onModuleChange }: SidebarProps) {
                     key={module.id}
                     onClick={() => onModuleChange(module.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 group relative ${isActive
-                        ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                        : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200"
+                      ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                      : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-200"
                       }`}
                   >
                     <Icon
                       size={18}
                       strokeWidth={isActive ? 2.5 : 2}
                       className={`transition-all duration-200 ${isActive
-                          ? "scale-110"
-                          : "group-hover:scale-110 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                        ? "scale-110"
+                        : "group-hover:scale-110 group-hover:text-gray-600 dark:group-hover:text-gray-300"
                         }`}
                     />
                     <span className={`text-sm font-sans font-medium transition-colors ${isActive ? "opacity-100" : "opacity-90 group-hover:opacity-100"

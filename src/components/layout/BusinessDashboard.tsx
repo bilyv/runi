@@ -8,7 +8,7 @@ import { Documents } from "../../features/documents/Documents";
 import { Reports } from "../../features/reports/Reports";
 import { Users } from "../../features/users/Users";
 import { Settings } from "../../features/settings/Settings";
-import { Transactions } from "../../features/transactions/Transactions";
+import { CashTracking } from "../../features/cash-tracking/CashTracking";
 import { useNavigate, useParams } from "react-router-dom";
 
 export type ModuleType =
@@ -20,7 +20,7 @@ export type ModuleType =
   | "reports"
   | "staff"
   | "settings"
-  | "transactions";
+  | "cash-tracking";
 
 import { Navbar } from "./Navbar";
 import { BarChart3, Package, Menu, Receipt, FileText, ShoppingCart } from "lucide-react";
@@ -53,7 +53,7 @@ export function BusinessDashboard() {
       "reports",
       "staff",
       "settings",
-      "transactions"
+      "cash-tracking"
     ];
     return validModules.includes(module as ModuleType);
   };
@@ -76,8 +76,8 @@ export function BusinessDashboard() {
         return <Users />;
       case "settings":
         return <Settings />;
-      case "transactions":
-        return <Transactions />;
+      case "cash-tracking":
+        return <CashTracking />;
       default:
         return <Dashboard />;
     }

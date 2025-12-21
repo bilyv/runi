@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type TabType = "all" | "deposited" | "debtors";
 
-export function Transactions() {
+export function CashTracking() {
   const [activeTab, setActiveTab] = useState<TabType>("all");
 
   const tabs = [
@@ -16,24 +16,24 @@ export function Transactions() {
     { id: "debtors", label: "Unpaid/Debtors" },
   ];
 
-    return (
-      <div className="p-6 space-y-8 max-w-7xl mx-auto">
-        <div className="text-center">
-          <h1 className="text-4xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
-            Transactions
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 font-body text-lg">
-            Monitor all your business financial flows in one place.
-          </p>
-        </div>
-        
-        <SubTabs 
-          tabs={tabs} 
-          activeTab={activeTab} 
-          onChange={(id) => setActiveTab(id as TabType)} 
-        />
-        
-        <div className="relative min-h-[500px]">
+  return (
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <div className="text-center">
+        <h1 className="text-4xl font-display font-bold text-gray-900 dark:text-dark-text tracking-tight">
+          Cash Tracking
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-2 font-body text-lg">
+          Monitor all your business financial flows in one place.
+        </p>
+      </div>
+
+      <SubTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={(id) => setActiveTab(id as TabType)}
+      />
+
+      <div className="relative min-h-[500px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
