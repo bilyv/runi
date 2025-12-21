@@ -29,7 +29,7 @@ src/
 │   ├── reports/         # Reporting components
 │   ├── sales/           # Sales management
 │   ├── settings/        # User settings
-│   ├── transactions/    # Transaction tracking
+│   ├── cash-tracking/    # Cash & Debt Tracking
 │   └── users/           # User management
 ├── lib/                 # Utility functions
 └── App.tsx             # Root application component
@@ -50,7 +50,7 @@ Each feature has its own directory with related components:
 - **Sales**: Sales recording and management
 - **Expenses**: Expense tracking and categorization
 - **Documents**: File and folder management
-- **Transactions**: Financial transaction overview
+- **Cash Tracking**: Financial flows, including bank/mobile money deposits and debt tracking.
 - **Reports**: Business reporting and analytics
 - **Settings**: User profile and preferences
 - **Users**: Team member management
@@ -78,7 +78,7 @@ Reusable UI components in `src/components/ui/`:
 ## Routing
 Implemented with React Router v6:
 - `/` - Dashboard (default route)
-- `/:module` - Specific module views (products, sales, etc.)
+- `/:module` - Specific module views (products, sales, cash-tracking, etc.)
 - Authentication routes handled by Convex components
 
 Navigation between modules is handled by the `BusinessDashboard` component which manages the active module state and renders the appropriate feature component.

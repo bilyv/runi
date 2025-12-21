@@ -14,7 +14,7 @@ Runi is a comprehensive business management application built with modern web te
 - **Reports**: Data visualization and business analytics.
 - **Users**: Manage team members, roles, and permissions.
 - **Settings**: Application configuration and preferences.
-- **Transactions**: Financial history and transaction logs.
+- **Cash Tracking**: Financial flows, including bank/mobile money deposits and debt tracking.
 - **Authentication**: Secure sign-in and session management via Convex Auth.
 
 ## 🔗 Routing
@@ -117,8 +117,8 @@ The application implements full client-side routing for direct access to all mod
 │   │   │   └── Users.tsx
 │   │   ├── settings/         # App Settings
 │   │   │   └── Settings.tsx
-│   │   └── transactions/     # Transaction History
-│   │       └── Transactions.tsx
+│   │   └── cash-tracking/    # Cash & Debt Tracking
+│   │       └── CashTracking.tsx
 │   │
 │   ├── lib/                  # Utilities
 │   │   └── utils.ts          # Helper functions (Tailwind merge, etc.)

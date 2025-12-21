@@ -30,7 +30,7 @@ Available queries by module:
 - `api.products.list`: List all products
 - `api.sales.list`: List all sales
 - `api.settings.get`: Get user settings
-- `api.transactions.list`: List all transactions
+
 - `api.users.get`: Get user profile
 
 ### Mutations
@@ -70,9 +70,7 @@ Available mutations by module:
 - `api.sales.update`: Update sale
 - `api.sales.delete`: Delete sale
 - `api.settings.update`: Update user settings
-- `api.transactions.create`: Create new transaction
-- `api.transactions.update`: Update transaction
-- `api.transactions.delete`: Delete transaction
+- `api.settings.update`: Update user settings
 
 ### Actions
 Used for complex operations that may take longer or interact with external services:

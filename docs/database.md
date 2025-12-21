@@ -55,13 +55,7 @@ The database schema is defined in `convex/schema.ts` using Convex's schema defin
 - `description`: Category description (String)
 - `createdAt`: Creation timestamp (Number)
 
-#### Transactions
-- `_id`: Internal ID (String)
-- `type`: Transaction type (String - "sale", "expense", "deposit")
-- `amount`: Transaction amount (Number)
-- `description`: Transaction description (String)
-- `status`: Transaction status (String)
-- `createdAt`: Transaction timestamp (Number)
+
 
 #### Folders (Documents)
 - `_id`: Internal ID (String)
