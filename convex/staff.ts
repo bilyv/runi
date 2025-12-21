@@ -180,7 +180,7 @@ export const login = mutation({
 
         // Check active status
         if (staff.is_active === false) {
-            throw new ConvexError("Account deactivated. Contact admin to restore access.");
+            throw new ConvexError("Your account has been deactivated by the administrator for a certain reason. Please contact the administrator.");
         }
 
         // Verify password

@@ -41,7 +41,8 @@ export function StaffLoginForm({ onSwitchToBusinessLogin, onLogin }: StaffLoginF
             navigate("/staff/dashboard");
 
         } catch (error: any) {
-            toast.error(error.message || "Failed to login. Please check your credentials.");
+            const errorMessage = error.data || error.message || "Failed to login. Please check your credentials.";
+            toast.error(errorMessage);
             console.error(error);
         } finally {
             setLoading(false);
