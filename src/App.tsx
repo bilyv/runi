@@ -10,8 +10,10 @@ import { useState } from "react";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Routes, Route } from "react-router-dom";
 
+import { StaffLoginForm } from "./features/auth/StaffLoginForm";
+
 export default function App() {
-  const [authView, setAuthView] = useState<'signIn' | 'signUp' | 'forgotPassword'>('signIn');
+  const [authView, setAuthView] = useState<'signIn' | 'signUp' | 'forgotPassword' | 'staffLogin'>('signIn');
 
   const AuthForm = () => {
     if (authView === 'signUp') {
@@ -20,9 +22,13 @@ export default function App() {
     if (authView === 'forgotPassword') {
       return <ForgotPasswordForm onSwitchToSignIn={() => setAuthView('signIn')} />;
     }
+    if (authView === 'staffLogin') {
+      return <StaffLoginForm onSwitchToBusinessLogin={() => setAuthView('signIn')} />;
+    }
     return <SignInForm
       onSwitchToSignUp={() => setAuthView('signUp')}
       onSwitchToForgotPassword={() => setAuthView('forgotPassword')}
+      onSwitchToStaffLogin={() => setAuthView('staffLogin')}
     />;
   };
 

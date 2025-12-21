@@ -1,8 +1,17 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { User } from "lucide-react";
 
-export function SignInForm({ onSwitchToSignUp, onSwitchToForgotPassword }: { onSwitchToSignUp: () => void, onSwitchToForgotPassword: () => void }) {
+export function SignInForm({
+    onSwitchToSignUp,
+    onSwitchToForgotPassword,
+    onSwitchToStaffLogin
+}: {
+    onSwitchToSignUp: () => void,
+    onSwitchToForgotPassword: () => void,
+    onSwitchToStaffLogin: () => void
+}) {
     const { signIn } = useAuthActions();
     const [loading, setLoading] = useState(false);
 
@@ -85,7 +94,7 @@ export function SignInForm({ onSwitchToSignUp, onSwitchToForgotPassword }: { onS
                 </button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 space-y-4 text-center">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                     Don't have an account?{' '}
                     <button
@@ -96,6 +105,17 @@ export function SignInForm({ onSwitchToSignUp, onSwitchToForgotPassword }: { onS
                         Sign up
                     </button>
                 </p>
+
+                <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                    <button
+                        type="button"
+                        onClick={onSwitchToStaffLogin}
+                        className="text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center justify-center gap-2 mx-auto"
+                    >
+                        <User className="w-4 h-4" />
+                        Staff Member? Login here
+                    </button>
+                </div>
             </div>
         </div>
     );
