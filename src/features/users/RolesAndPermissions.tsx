@@ -11,7 +11,8 @@ import {
   ChevronRight,
   ShieldCheck,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
@@ -108,9 +109,9 @@ export function RolesAndPermissions() {
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] min-h-[600px] bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-white/5 overflow-hidden">
       {/* Header */}
-      <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+      <div className="px-6 md:px-8 py-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
             <ShieldCheck className="w-6 h-6 text-primary" />
           </div>
           <div>
@@ -120,9 +121,12 @@ export function RolesAndPermissions() {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar: Staff List */}
-        <div className="w-80 border-r border-gray-100 dark:border-white/5 flex flex-col">
+        <div className={cn(
+          "w-full md:w-80 border-r border-gray-100 dark:border-white/5 flex flex-col absolute inset-0 z-10 bg-white dark:bg-dark-card md:relative md:bg-transparent md:z-0 transition-transform duration-300 ease-in-out",
+          selectedStaffId ? "-translate-x-full md:translate-x-0" : "translate-x-0"
+        )}>
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -155,7 +159,7 @@ export function RolesAndPermissions() {
                   )}
                 >
                   <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold uppercase",
+                    "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold uppercase shrink-0",
                     selectedStaffId === member._id
                       ? "bg-white/20 text-white"
                       : "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400"
@@ -177,8 +181,10 @@ export function RolesAndPermissions() {
                     </p>
                   </div>
                   <ChevronRight className={cn(
-                    "w-4 h-4 transition-transform",
-                    selectedStaffId === member._id ? "text-white opacity-100 translate-x-1" : "text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100"
+                    "w-4 h-4 transition-transform md:block",
+                    selectedStaffId === member._id ? "text-white opacity-100 translate-x-1" : "text-gray-300 dark:text-gray-600 opacity-0 group-hover:opacity-100",
+                    // Always show chevron on mobile to indicate navigation
+                    "block opacity-100"
                   )} />
                 </button>
               ))
@@ -192,118 +198,142 @@ export function RolesAndPermissions() {
         </div>
 
         {/* Main Content: Permissions */}
-        <div className="flex-1 overflow-y-auto bg-gray-50/30 dark:bg-transparent">
+        <div className={cn(
+          "flex-1 overflow-y-auto bg-gray-50/30 dark:bg-transparent absolute inset-0 z-10 md:static md:z-0 bg-white dark:bg-dark-card transition-transform duration-300 ease-in-out",
+          selectedStaffId ? "translate-x-0" : "translate-x-full md:translate-x-0"
+        )}>
           {selectedStaff ? (
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    {selectedStaff.staff_full_name}
-                    <span className="text-sm font-normal px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-lg">
+            <div className="p-4 md:p-8 h-full flex flex-col">
+              {/* Mobile Header with Back Button */}
+              <div className="flex items-center gap-2 mb-6 md:mb-8">
+                <button
+                  onClick={() => setSelectedStaffId(null)}
+                  className="p-2 -ml-2 mr-1 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 md:hidden"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+                    <span className="truncate">{selectedStaff.staff_full_name}</span>
+                    <span className="text-xs font-normal px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 rounded-lg whitespace-nowrap">
                       Staff Member
                     </span>
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400 mt-1">Configure what this user can access and perform.</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">Configure access permissions</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="hidden md:flex gap-2">
                   <button className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors">
-                    Reset to Default
+                    Reset
                   </button>
                   <button className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
-                    Save Changes
+                    Save
                   </button>
                 </div>
               </div>
 
-              {/* Tabs */}
-              <div className="flex p-1 bg-gray-100 dark:bg-white/5 rounded-2xl mb-8 w-fit">
-                {permissionGroups.map((group) => {
-                  const Icon = group.icon;
-                  return (
-                    <button
-                      key={group.id}
-                      onClick={() => setActiveTab(group.id)}
-                      className={cn(
-                        "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all relative",
-                        activeTab === group.id
-                          ? "bg-white dark:bg-white/10 text-primary shadow-sm"
-                          : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                      )}
-                    >
-                      <Icon className={cn("w-4 h-4", activeTab === group.id ? "text-primary" : "text-gray-400")} />
-                      {group.label}
-                      {activeTab === group.id && (
-                        <motion.div
-                          layoutId="activeTabGlow"
-                          className="absolute inset-0 rounded-xl bg-primary/5 dark:bg-primary/10"
-                          initial={false}
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                        />
-                      )}
-                    </button>
-                  );
-                })}
+              {/* Tabs - Horizontal Scrollable on Mobile */}
+              <div className="w-full overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0 mb-6 md:mb-8 scrollbar-hide">
+                <div className="flex p-1 bg-gray-100 dark:bg-white/5 rounded-2xl w-max md:w-fit">
+                  {permissionGroups.map((group) => {
+                    const Icon = group.icon;
+                    return (
+                      <button
+                        key={group.id}
+                        onClick={() => setActiveTab(group.id)}
+                        className={cn(
+                          "flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-xl text-sm font-medium transition-all relative whitespace-nowrap",
+                          activeTab === group.id
+                            ? "bg-white dark:bg-white/10 text-primary shadow-sm"
+                            : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                        )}
+                      >
+                        <Icon className={cn("w-4 h-4", activeTab === group.id ? "text-primary" : "text-gray-400")} />
+                        {group.label}
+                        {activeTab === group.id && (
+                          <motion.div
+                            layoutId="activeTabGlow"
+                            className="absolute inset-0 rounded-xl bg-primary/5 dark:bg-primary/10"
+                            initial={false}
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Tab Content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
-                  {permissionGroups.find(g => g.id === activeTab)?.permissions.map((permission) => (
-                    <div
-                      key={permission.id}
-                      className={cn(
-                        "p-5 rounded-2xl border transition-all cursor-pointer group",
-                        permission.enabled
-                          ? "bg-white dark:bg-white/5 border-primary/20 shadow-sm"
-                          : "bg-gray-50/50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5"
-                      )}
-                      onClick={() => togglePermission(activeTab, permission.id)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-bold text-gray-900 dark:text-white text-base">
-                              {permission.name}
-                            </h4>
-                            {permission.enabled && (
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
-                            )}
+              <div className="flex-1 overflow-y-auto -mx-4 px-4 md:mx-0 md:px-0">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="grid grid-cols-1 xl:grid-cols-2 gap-4 pb-20 md:pb-0"
+                  >
+                    {permissionGroups.find(g => g.id === activeTab)?.permissions.map((permission) => (
+                      <div
+                        key={permission.id}
+                        className={cn(
+                          "p-4 md:p-5 rounded-2xl border transition-all cursor-pointer group",
+                          permission.enabled
+                            ? "bg-white dark:bg-white/5 border-primary/20 shadow-sm"
+                            : "bg-gray-50/50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5"
+                        )}
+                        onClick={() => togglePermission(activeTab, permission.id)}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-bold text-gray-900 dark:text-white text-base truncate">
+                                {permission.name}
+                              </h4>
+                              {permission.enabled && (
+                                <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
+                              {permission.description}
+                            </p>
                           </div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                            {permission.description}
-                          </p>
-                        </div>
-                        <div className={cn(
-                          "w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out relative flex items-center",
-                          permission.enabled ? "bg-primary" : "bg-gray-200 dark:bg-white/10"
-                        )}>
                           <div className={cn(
-                            "w-4 h-4 bg-white rounded-full transition-transform duration-200 shadow-sm",
-                            permission.enabled ? "translate-x-6" : "translate-x-0"
-                          )} />
+                            "w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out relative flex items-center shrink-0",
+                            permission.enabled ? "bg-primary" : "bg-gray-200 dark:bg-white/10"
+                          )}>
+                            <div className={cn(
+                              "w-4 h-4 bg-white rounded-full transition-transform duration-200 shadow-sm",
+                              permission.enabled ? "translate-x-6" : "translate-x-0"
+                            )} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
 
-                  <div className="md:col-span-2 p-6 mt-4 bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 rounded-2xl flex gap-4 items-start">
-                    <AlertCircle className="w-6 h-6 text-orange-500 shrink-0" />
-                    <div>
-                      <h5 className="font-bold text-orange-900 dark:text-orange-400">Security Warning</h5>
-                      <p className="text-sm text-orange-700 dark:text-orange-400/80 mt-1">
-                        Changes to permissions will take effect immediately. The staff member may need to refresh their page to see some changes reflected in the UI.
-                      </p>
+                    <div className="xl:col-span-2 p-4 md:p-6 mt-4 bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 rounded-2xl flex gap-4 items-start">
+                      <AlertCircle className="w-6 h-6 text-orange-500 shrink-0" />
+                      <div>
+                        <h5 className="font-bold text-orange-900 dark:text-orange-400">Security Warning</h5>
+                        <p className="text-sm text-orange-700 dark:text-orange-400/80 mt-1">
+                          Changes to permissions will take effect immediately.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Mobile Floating Actions */}
+              <div className="md:hidden fixed bottom-4 left-4 right-4 flex gap-2 z-20">
+                <button className="flex-1 py-3 text-sm font-medium bg-white dark:bg-dark-card border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl shadow-lg">
+                  Reset
+                </button>
+                <button className="flex-1 py-3 text-sm font-medium bg-primary text-white rounded-xl shadow-lg shadow-primary/20">
+                  Save Changes
+                </button>
+              </div>
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-center p-8">
@@ -312,7 +342,7 @@ export function RolesAndPermissions() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Select a Staff Member</h3>
               <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-xs">
-                Choose a staff member from the left sidebar to manage their access permissions and roles.
+                Choose a staff member to manage their permissions.
               </p>
             </div>
           )}

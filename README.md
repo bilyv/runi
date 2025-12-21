@@ -1,6 +1,6 @@
 # Runi
 
-Runi is a comprehensive business management application built with modern web technologies. This project serves as a robust template for managing various aspects of a business, including inventory, sales, customers, and expenses.
+Runi is a comprehensive business management application built with modern web technologies. This project serves as a robust template for managing various aspects of a business, including inventory, sales, customers, expenses, and staff.
 
 ## 🚀 Features
 
@@ -8,14 +8,22 @@ Runi is a comprehensive business management application built with modern web te
 - **Products**: Comprehensive inventory management (add, edit, delete with approval workflow, tracking).
   - Two-phase product editing and deletion approval workflow to prevent accidental data loss
   - Detailed stock movement tracking and auditing
-- **Sales**: Process and track sales orders.
-- **Expenses**: Record and categorize business expenses.
-- **Documents**: File management system for business records.
-- **Reports**: Data visualization and business analytics.
-- **Users**: Manage team members, roles, and permissions.
-- **Settings**: Application configuration and preferences.
+- **Sales**: Process and track sales orders with full audit trails.
+  - Manual and automated sales tracking
+  - Payment status management (Pending, Partial, Completed)
+  - Sales audit system for tracking changes and deletions
+- **Expenses**: Record and categorize business expenses with budget tracking.
+- **Documents**: Advanced file management system with folder organization.
+- **Reports**: Data visualization and business analytics (Daily, Weekly, Monthly).
+- **Staff Management**: Comprehensive team management system.
+  - Separate Staff login portal
+  - Role-based permissions and access levels
+  - Detailed staff activity tracking
+- **Settings**: Application configuration and business preferences.
 - **Cash Tracking**: Financial flows, including bank/mobile money deposits and debt tracking.
-- **Authentication**: Secure sign-in and session management via Convex Auth.
+- **Authentication**: 
+  - Boss Login: Secure sign-in via Convex Auth.
+  - Staff Login: Custom authentication system for employees.
 
 ## 🔗 Routing
 
@@ -33,286 +41,129 @@ The application implements full client-side routing for direct access to all mod
 - **Framework**: [React 19](https://react.dev/) with TypeScript
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) for utility-first CSS
-- **UI Components**: Custom component library with reusable elements
+- **UI Components**: Custom component library using Radix UI primitives and Framer Motion for animations
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
-- **State Management**: React Context API and useState/useReducer hooks
 - **Routing**: React Router DOM (fully implemented for direct URL access to all modules)
 
 ### Backend & Database
 - **Platform**: [Convex](https://convex.dev/)
   - Real-time database with automatic conflict resolution
-  - Serverless functions for business logic
-  - Built-in authentication via `@convex-dev/auth`
-  - File storage with `_storage` table
-- **Database Schema**: Defined in `convex/schema.ts` with tables for products, sales, expenses, users, and more
-- **API Layer**: Convex functions (queries, mutations, actions) in respective feature files
-
-### Authentication
-- **Library**: `@convex-dev/auth` with password provider
-- **Session Management**: Automatic session handling with secure cookies
-- **Protected Routes**: Custom hooks and wrappers for route protection
-
-### Development & Deployment
-- **Language**: TypeScript (strict mode)
-- **Linting**: ESLint with recommended presets
-- **Code Formatting**: Prettier
-- **Package Manager**: npm
-- **Deployment**: Convex hosting with automatic CI/CD
+  - Serverless functions (Queries, Mutations, Actions)
+  - Built-in authentication for business owners via `@convex-dev/auth`
+  - Custom authentication for staff members
+  - Managed file storage
+- **Database Schema**: Structured data with indexes for performance
+- **API Layer**: Type-safe Convex functions in the `convex/` directory
 
 ## 📂 Project Structure
 
 ```
 ├── convex/                   # Backend API & Database
-│   ├── _generated/           # Auto-generated Convex code
 │   ├── auth.config.ts        # Auth configuration
-│   ├── auth.ts               # Authentication logic & handlers
-│   ├── schema.ts             # Database schema using Convex
-│   ├── dashboard.ts          # Dashboard API endpoints
-│   ├── products.ts           # Product API endpoints
-│   ├── sales.ts              # Sales API endpoints
-│   ├── expenses.ts           # Expenses API endpoints
-│   ├── documents.ts          # Document management API
-│   ├── reports.ts            # Reporting API
-│   ├── users.ts              # User management API
-│   ├── settings.ts           # Settings API
-│   └── http.ts               # HTTP routes
+│   ├── auth.ts               # Authentication logic
+│   ├── schema.ts             # Database schema definition
+│   ├── dashboard.ts          # Dashboard analytics API
+│   ├── products.ts           # Product & Inventory API
+│   ├── sales.ts              # Sales & Audit API
+│   ├── expenses.ts           # Expense management API
+│   ├── files.ts              # File management API
+│   ├── folders.ts            # Folder organization API
+│   ├── staff.ts              # Staff & Permissions API
+│   ├── deposit.ts            # Cash tracking & Deposits API
+│   ├── users.ts              # Owner profile API
+│   └── http.ts               # HTTP actions
 │
 ├── src/                      # Frontend Application
 │   ├── components/           # Shared UI Components
-│   │   ├── layout/           # Layout Components
-│   │   │   ├── BusinessDashboard.tsx  # Main dashboard layout wrapper with routing integration
-│   │   │   ├── Navbar.tsx             # Top navigation bar
-│   │   │   └── Sidebar.tsx            # Side navigation menu
-│   │   ├── ui/               # Generic UI Elements
-│   │   │   ├── Button.tsx             # Reusable button component
-│   │   │   ├── Input.tsx              # Form input component
-│   │   │   ├── Modal.tsx              # Dialog/Modal component
-│   │   │   └── StatCard.tsx           # Dashboard statistic card
-│   │   └── ThemeProvider.tsx # Theme context provider (Dark/Light mode)
+│   │   ├── layout/           # Dashboard & Navigation layouts
+│   │   ├── ui/               # Primary UI elements (Buttons, Inputs, etc.)
+│   │   └── DebtorsList.tsx    # Specific business logic components
 │   │
-│   ├── features/             # Feature-based Modules
-│   │   ├── auth/             # Authentication Screens
-│   │   │   ├── SignInForm.tsx
-│   │   │   ├── SignUpForm.tsx
-│   │   │   ├── ForgotPasswordForm.tsx
-│   │   │   └── SignOutButton.tsx
-│   │   ├── dashboard/        # Dashboard Feature
-│   │   │   └── Dashboard.tsx
-│   │   ├── products/         # Product Management
-│   │   │   ├── LiveStock.tsx        # Live inventory management with deletion workflow
-│   │   │   └── Products.tsx
-│   │   ├── sales/            # Sales & Orders
-│   │   │   ├── AddSale.tsx           # Add new sales component
-│   │   │   ├── ManageSales.tsx       # Manage existing sales component
-│   │   │   ├── AuditSales.tsx        # Audit sales transactions component
-│   │   │   └── Sales.tsx             # Main sales component with tab navigation
-│   │   ├── expenses/         # Expense Tracking
-│   │   │   └── Expenses.tsx
-│   │   ├── documents/        # File Management
-│   │   │   └── Documents.tsx
-│   │   ├── reports/          # Analytics & Reports
-│   │   │   └── Reports.tsx
-│   │   ├── users/            # User Administration
-│   │   │   └── Users.tsx
-│   │   ├── settings/         # App Settings
-│   │   │   └── Settings.tsx
-│   │   └── cash-tracking/    # Cash & Debt Tracking
-│   │       └── CashTracking.tsx
+│   ├── features/             # Domain-driven Modules
+│   │   ├── auth/             # Login & Registration (Owner & Staff)
+│   │   ├── dashboard/        # Analytics & Overview
+│   │   ├── products/         # Inventory management
+│   │   ├── sales/            # Sales processing & Auditing
+│   │   ├── expenses/         # Financial tracking
+│   │   ├── documents/        # File & Folder management
+│   │   ├── staff/            # Staff management UI
+│   │   └── cash-tracking/    # Deposits & Debt tracking
 │   │
-│   ├── lib/                  # Utilities
-│   │   └── utils.ts          # Helper functions (Tailwind merge, etc.)
-│   │
-│   ├── App.tsx               # Main App Component with Route Definitions
-│   ├── main.tsx              # React Entry Point with BrowserRouter
-│   └── index.css             # Global Styles & Tailwind Directives
-│
-├── public/                   # Static Assets
-├── .env.local                # Environment Variables
-├── package.json              # Dependencies & Scripts
-└── tsconfig.json             # TypeScript Configuration
+│   ├── lib/                  # Shared utilities & constants
+│   ├── App.tsx               # Main routing & configuration
+│   └── main.tsx              # Application entry point
 ```
 
-### 🗄️ Database Schema
+## 🗄️ Database Schema
 
-The application uses Convex as its backend database with the following key tables:
+The application follows a relational-style schema within Convex:
 
-**Core Business Tables:**
-- `users` - User accounts and profiles
-- `products` - Product inventory with box/kg tracking
-- `productcategory` - Product categories
-- `sales` - Sales transactions with detailed tracking
-- `sales_audit` - Audit trail for sales transactions
-- `expenses` - Business expenses with categorization
-- `expensecategory` - Expense categories
-- `documents` - File storage metadata
-- `folders` - Document organization
-- `files` - Individual file records
+**Management Tables:**
+- `users`: Business owner accounts
+- `staff`: Employee accounts with custom auth
+- `settings`: Application-wide configurations
 
-**Tracking & Monitoring Tables:**
-- `restock` - New inventory additions
-- `stock_corrections` - Inventory adjustments
-- `damaged_products` - Damaged inventory tracking
-- `stock_movements` - All inventory movements (also used for product deletion approval workflow)
+**Inventory & Sales:**
+- `products`: Product details and stock levels (Unit: Boxes/KG)
+- `productcategory`: Logical grouping for products
+- `restock`: History of added stock
+- `stock_movements`: Log of all inventory changes (used for approval workflows)
+- `sales`: Transaction records
+- `sales_audit`: Detailed log of sales modifications for security
 
-#### Product Editing and Deletion Approval Workflow
+**Financials:**
+- `expenses`: Business spending records
+- `expensecategory`: Spending classifications
+- `deposit`: Tracking bank and mobile money deposits
 
-The application implements a two-phase approval workflow for product edits and deletions to prevent accidental data loss:
-
-1. **Edit Request Phase**:
-   - User selects a product to edit in the inventory interface
-   - System opens the "Edit Product" dialog
-   - User modifies one or more fields and provides a reason for the changes
-   - Upon submission, for each changed field, a record is created in the `stock_movements` table with:
-     - `movement_type`: 'product_edit'
-     - `product_id`: References the product being edited
-     - `field_changed`: The specific field that was modified
-     - `old_value`: Original value before edit
-     - `new_value`: Proposed new value
-     - `reason`: User-provided explanation
-     - `status`: Initially 'pending'
-     - `performed_by`: User who initiated the edit
-
-2. **Deletion Request Phase**:
-   - User selects a product to delete in the inventory interface
-   - System opens the "Request Product Deletion" dialog
-   - User must provide a reason for the deletion
-   - Upon submission, a record is created in the `stock_movements` table with:
-     - `movement_type`: 'product_delete'
-     - `product_id`: References the product to be deleted
-     - `reason`: User-provided reason for deletion
-     - `status`: Initially 'pending'
-     - `performed_by`: User who initiated the request
-
-3. **Approval Phase**:
-   - Pending edit and deletion requests appear in the "Stock Adjustment" view
-   - Managers can either:
-     - **Approve**: Applies the changes to the actual product (for edits) or permanently deletes the product (for deletions)
-     - **Reject**: Cancels the request, keeping the product unchanged
-
-#### Sales Table Structure
-
-The `sales` table contains the following fields:
-- `sales_id` - Unique identifier for the sale
-- `user_id` - Reference to the user who owns this record
-- `product_id` - Reference to the product being sold
-- `boxes_quantity` - Number of boxes sold
-- `kg_quantity` - Weight in kilograms sold
-- `box_price` - Price per box
-- `kg_price` - Price per kilogram
-- `profit_per_box` - Profit margin per box
-- `profit_per_kg` - Profit margin per kilogram
-- `total_amount` - Total sale value
-- `amount_paid` - Amount already paid by customer
-- `remaining_amount` - Outstanding balance
-- `payment_status` - Current payment status (pending/partial/completed)
-- `payment_method` - Method of payment used
-- `performed_by` - User who executed the sale
-- `client_id` - Reference to the customer
-- `client_name` - Customer name
-- `phone_number` - Customer contact number
-- `updated_at` - Timestamp of last modification
-
-#### Sales Audit Table Structure
-
-The `sales_audit` table tracks all changes to sales records:
-- `audit_id` - Unique identifier for the audit record
-- `user_id` - Reference to the user who owns this record
-- `sales_id` - Reference to the sales record being audited
-- `audit_type` - Type of change (insert/update/delete)
-- `boxes_change` - Changes to box quantities (before/after values)
-- `kg_change` - Changes to kg quantities (before/after values)
-- `old_values` - Complete previous state of the record
-- `new_values` - Complete new state of the record
-- `performed_by` - User who made the change
-- `approval_status` - Current approval status (pending/approved/rejected)
-- `approved_by` - User who approved the change (if applicable)
-- `approved_timestamp` - When the change was approved (if applicable)
-- `reason` - Explanation for the audit action
-- `updated_at` - Timestamp of the audit record creation
-
-Each table is designed with appropriate indexes for optimal query performance and includes timestamp fields for audit trails. The `stock_movements` table is particularly important as it not only tracks all inventory movements but also manages both product editing and deletion approval workflows. For edit requests, it includes a `field_changed` column to track which specific field is being modified.
-
-## 🔄 Routing Implementation
-
-The application now features a complete client-side routing system that enables direct URL access to all modules:
-
-1. **BrowserRouter Integration**: The main application is wrapped with React Router's BrowserRouter in `main.tsx`
-2. **Route Configuration**: Dynamic routes are configured in `App.tsx` to handle module parameters
-3. **Parameter-Based Navigation**: The `BusinessDashboard.tsx` component uses `useParams` to read URL parameters and `useNavigate` for programmatic navigation
-4. **Validation & Fallback**: Invalid module URLs are automatically redirected to the home page
-5. **State Synchronization**: URL changes are synchronized with application state for consistent UI
-
-This implementation ensures users can bookmark, share, and directly access any module while maintaining the existing application functionality.
+**Organization:**
+- `folders`: Directory structure for files
+- `files`: Specifically uploaded business documents
 
 ## ⚡ Getting Started
 
 ### Prerequisites
-
-- Node.js (v18 or higher recommended)
-- npm or yarn
+- Node.js (v18+)
+- npm
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone & Install**
    ```bash
    git clone <repository-url>
-   cd <project-directory>
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
    ```
 
-3. **Configure Convex**
-   This project uses Convex for the backend. You need to set up your Convex project and environment variables.
-
-   Run the dev command to initialize:
+2. **Backend Setup**
    ```bash
    npx convex dev
    ```
-   
-   - If this is your first time, it will prompt you to log in to Convex.
-   - You will be asked to select an existing project or create a new one.
-   - This process will automatically generate a `.env.local` file with your `CONVEX_DEPLOYMENT` and `VITE_CONVEX_URL`.
+   Follow the prompts to link your project or create a new one.
 
-   **Note:** If you are using authentication providers (like GitHub, Google, etc.), you will need to configure them in the [Convex Dashboard](https://dashboard.convex.dev/) and add any required environment variables.
+3. **Environment Variables**
+   Ensure your `.env.local` is populated with:
+   - `VITE_CONVEX_URL`
+   - `CONVEX_DEPLOYMENT`
 
-4. **Start the development server**
-   This command runs both the frontend (Vite) and backend (Convex) concurrently.
+4. **Run Application**
    ```bash
    npm run dev
    ```
 
-   - Frontend: http://localhost:5173
-   - Convex Dashboard: Automatically opens or runs in the background
+## 📜 Available Scripts
+- `npm run dev`: Full application launch (Frontend + Convex)
+- `npm run build`: Production bundle generation
+- `npm run lint`: Code quality check
 
-### Build for Production
+## 🔒 Security & Roles
+Runi implements a strict security model:
+- **Owners**: Full access to all modules, financial data, and staff management.
+- **Staff**: Restricted access based on assigned permissions (Sales, Product editing, etc.).
+- **Audit Trails**: Critical actions (Stock changes, Sale edits) require reasons and log the performing user.
 
-To build the application for production:
-
-```bash
-npm run build
-```
-
-## 📜 Scripts
-
-- `npm run dev`: Starts both frontend and backend in development mode with proper routing.
-- `npm run dev:frontend`: Starts only the Vite frontend server with routing enabled.
-- `npm run dev:backend`: Starts only the Convex backend server.
-- `npm run build`: Builds the project for production.
-- `npm run lint`: Runs type checking and linting.
-
-## 🔒 Authentication
-
-This project uses `@convex-dev/auth` for handling user authentication. Ensure you have configured your Convex project correctly to handle auth providers if needed.
-
-## � Author
-
+## 👤 Author
 **Ntwari K. Brian**
 
-
-## �📄 License
-
+## 📄 License
 [MIT](LICENSE)

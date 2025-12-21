@@ -46,8 +46,9 @@ Backend logic is organized into modules in the `convex/` directory:
 - `productCategories.ts`: Product category management
 - `products.ts`: Product management
 - `sales.ts`: Sales transaction management
+- `staff.ts`: Staff management and custom authentication
+- `deposit.ts`: Bank and Mobile Money deposit tracking
 - `settings.ts`: User settings management
-
 - `users.ts`: User profile management
 
 ### Schema Definition
