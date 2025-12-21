@@ -5,11 +5,15 @@
 :root {
   --color-light: #ffffff;
   --color-dark: #171717;
+  --auth-glass: rgba(255, 255, 255, 0.7);
+  --auth-border: rgba(255, 255, 255, 0.4);
 }
 
-dark {
-  --color-light: #1e1e1e;
-  --color-dark: #e0e0e0;
+.dark {
+  --color-light: #0f172a;
+  --color-dark: #f8fafc;
+  --auth-glass: rgba(15, 23, 42, 0.8);
+  --auth-border: rgba(255, 255, 255, 0.1);
 }
 
 .accent-text {
@@ -55,6 +59,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -69,6 +74,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -79,6 +85,7 @@ body {
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -90,6 +97,7 @@ body {
     opacity: 0;
     transform: translateX(10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -108,20 +116,23 @@ body {
   animation: fadeInRight 0.3s ease-in-out forwards;
 }
 
-/* only use this to update the style of the auth input fields. use a different class for all other input fields */
+/* refined auth styles */
 .auth-input-field {
-  @apply w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 shadow-sm hover:shadow-sm focus:shadow-md;
+  @apply w-full px-5 py-3.5 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 focus:border-blue-500 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 shadow-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 backdrop-blur-sm hover:border-slate-300 dark:hover:border-slate-700;
 }
 
-dark .auth-input-field {
-  @apply bg-dark-card border-dark-border;
-}
-
-/* only use this to update the style of the auth buttons. use the button class for all other buttons */
 .auth-button {
-  @apply w-full px-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-base hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] transition-all duration-300 shadow-xl shadow-blue-500/25 disabled:opacity-50 disabled:grayscale disabled:scale-100 flex items-center justify-center gap-2;
 }
 
-dark .auth-button {
-  @apply bg-blue-700 hover:bg-blue-800;
+.auth-card {
+  @apply bg-white/40 dark:bg-black/20 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-[2.5rem] shadow-2xl;
+}
+
+.auth-heading {
+  @apply text-3xl font-display font-black tracking-tight text-slate-900 dark:text-white leading-tight;
+}
+
+.auth-subheading {
+  @apply text-slate-500 dark:text-slate-400 font-sans text-sm font-medium;
 }

@@ -5,12 +5,13 @@ import { RolesAndPermissions } from "./RolesAndPermissions";
 import { SubTabs } from "../../components/ui/SubTabs";
 import { motion, AnimatePresence } from "framer-motion";
 
-type TabType = "roles";
+type TabType = "all" | "roles";
 
 export function Users() {
-  const [activeTab, setActiveTab] = useState<TabType>("roles");
+  const [activeTab, setActiveTab] = useState<TabType>("all");
 
   const tabs = [
+    { id: "all", label: "All Staff" },
     { id: "roles", label: "Roles & Permissions" },
   ];
 
@@ -40,6 +41,7 @@ export function Users() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
+            {activeTab === "all" && <AllWorkers />}
             {activeTab === "roles" && <RolesAndPermissions />}
           </motion.div>
         </AnimatePresence>
