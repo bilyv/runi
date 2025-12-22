@@ -301,6 +301,19 @@ const applicationTables = {
     .index("by_staff_id", ["staff_id"])
     .index("by_phone", ["phone_number"])
     .index("by_email", ["email_address"]),
+
+  // Staff Permissions
+  staff_permissions: defineTable({
+    staff_id: v.id("staff"),      // Foreign Key to the staff table
+    user_id: v.id("users"),       // The business owner ID (for multi-tenant scoping)
+    permission_key: v.string(),   // The unique ID of the permission (e.g., 'p1_view', 'c1_create')
+    is_enabled: v.boolean(),      // Whether this specific permission is granted
+    updated_at: v.number(),       // Unix timestamp of the last change
+  })
+    .index("by_staff", ["staff_id"])
+    .index("by_user_staff", ["user_id", "staff_id"])
+    .index("by_staff_key", ["staff_id", "permission_key"]),
+
 };
 
 export default defineSchema({
