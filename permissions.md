@@ -64,6 +64,13 @@ The `permission_key` column should store the internal IDs used in the frontend. 
 | | `c1_delete` | Delete Deposited |
 | **Debtor** | `c2_view` | View Debtors |
 
+### Department Master Switches
+| Department | Internal Key | Description |
+| :--- | :--- | :--- |
+| **Product** | `product_master` | Global toggle for all Product permissions |
+| **Sales** | `sales_master` | Global toggle for all Sales permissions |
+| **Cash Tracking** | `cash_tracking_master` | Global toggle for all Cash Tracking permissions |
+
 ---
 
 ## 4. Business Logic Requirements
@@ -74,3 +81,11 @@ As implemented in the UI, all actions within a sub-group depend on the `_view` p
 1.  **Validation**: If a request comes into the API for an action (e.g., `update_stock`), the backend should check if the staff member has both `p1_view` **and** `p1_edit` enabled in the `staff_permissions` table.
 2.  **Cascade Disable**: When the `_view` permission is set to `false` in the database, all other keys for that sub-group associated with that `staff_id` should also be set to `false` or deleted.
 
+### 5. Navigation Visibility (Sidebar Logic)
+The **Department Master Switches** (e.g., `product_master`) directly control the visibility of the primary navigation tabs in the staff member's interface.
+
+1.  **Dynamic Rendering**: The staff's sidebar/navigation system must query the `staff_permissions` table for these master keys upon login or session refresh.
+2.  **Toggle Behavior**:
+    *   **IF `master_key` is TRUE**: The department tab (e.g., "Products") is visible and accessible in the sidebar.
+    *   **IF `master_key` is FALSE**: The department tab is completely removed from the sidebar and navigation menu.
+3.  **URL Protection**: If a staff member attempts to manually navigate to a URL they don't have the master permission for (e.g., `/products`), the system should redirect them back to the dashboard.
