@@ -1,11 +1,11 @@
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 
 // Create styles
 const styles = StyleSheet.create({
     page: {
         padding: 30,
-        fontSize: 10,
+        fontSize: 9,
         fontFamily: 'Helvetica',
         color: '#333',
     },
@@ -18,27 +18,23 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     title: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#2563EB',
     },
     businessInfo: {
         textAlign: 'right',
     },
-    reportMeta: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    section: {
         marginBottom: 20,
-        backgroundColor: '#F3F4F6',
-        padding: 10,
-        borderRadius: 4,
     },
     sectionTitle: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
-        marginBottom: 10,
-        marginTop: 10,
+        marginBottom: 8,
         color: '#1E40AF',
+        backgroundColor: '#EFF6FF',
+        padding: 4,
     },
     table: {
         display: 'flex',
@@ -53,6 +49,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: '#E5E7EB',
+        minHeight: 20,
+        alignItems: 'center',
     },
     tableHeader: {
         backgroundColor: '#F9FAFB',
@@ -62,33 +60,35 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRightWidth: 1,
         borderRightColor: '#E5E7EB',
-        padding: 5,
+        padding: 4,
     },
     tableCell: {
-        margin: 'auto',
-        marginTop: 5,
-        fontSize: 8,
+        fontSize: 7,
     },
-    totalsSection: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#EFF6FF',
-        borderRadius: 4,
+    summaryGrid: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        flexWrap: 'wrap',
+        gap: 10,
+        marginBottom: 20,
     },
-    totalItem: {
-        marginLeft: 20,
-        textAlign: 'right',
+    summaryCard: {
+        width: '23%',
+        padding: 10,
+        backgroundColor: '#F9FAFB',
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
     },
-    totalLabel: {
-        fontSize: 8,
+    summaryLabel: {
+        fontSize: 7,
         color: '#6B7280',
+        marginBottom: 2,
+        textTransform: 'uppercase',
     },
-    totalValue: {
+    summaryValue: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: '#1E40AF',
+        color: '#111827',
     },
     footer: {
         position: 'absolute',
@@ -97,25 +97,38 @@ const styles = StyleSheet.create({
         right: 30,
         textAlign: 'center',
         color: '#9CA3AF',
-        fontSize: 8,
+        fontSize: 7,
         borderTopWidth: 1,
         borderTopColor: '#EEE',
         paddingTop: 10,
     },
+    bold: {
+        fontWeight: 'bold',
+    },
+    profit: {
+        color: '#059669',
+    },
+    loss: {
+        color: '#DC2626',
+    }
 });
 
 interface ReportPDFProps {
     title: string;
     businessName: string;
     dateRange: string;
-    data: any[];
-    columns: { label: string; key: string; format?: (val: any) => string }[];
-    totals: { label: string; value: string }[];
+    layout?: 'portrait' | 'landscape';
+    sections: {
+        type: 'table' | 'summary' | 'list';
+        title?: string;
+        data: any;
+        columns?: { label: string; key: string; format?: (val: any) => string; width?: string | number }[];
+    }[];
 }
 
-export const ReportPDF = ({ title, businessName, dateRange, data, columns, totals }: ReportPDFProps) => (
+export const ReportPDF = ({ title, businessName, dateRange, layout = 'portrait', sections }: ReportPDFProps) => (
     <Document>
-        <Page size="A4" style={styles.page}>
+        <Page size="A4" orientation={layout} style={styles.page}>
             {/* Header */}
             <View style={styles.header}>
                 <View>
@@ -124,44 +137,62 @@ export const ReportPDF = ({ title, businessName, dateRange, data, columns, total
                 </View>
                 <View style={styles.businessInfo}>
                     <Text style={{ fontWeight: 'bold' }}>{businessName}</Text>
-                    <Text>Generated on {format(new Date(), 'PPP')}</Text>
+                    <Text>Generated on {format(new Date(), 'PPP p')}</Text>
                 </View>
             </View>
 
-            {/* Table */}
-            <View style={styles.table}>
-                {/* Header Row */}
-                <View style={[styles.tableRow, styles.tableHeader]}>
-                    {columns.map((col, idx) => (
-                        <View key={idx} style={styles.tableCol}>
-                            <Text style={styles.tableCell}>{col.label}</Text>
+            {sections.map((section, sIdx) => (
+                <View key={sIdx} style={styles.section}>
+                    {section.title && <Text style={styles.sectionTitle}>{section.title}</Text>}
+
+                    {section.type === 'summary' && (
+                        <View style={styles.summaryGrid}>
+                            {section.data.map((item: any, iIdx: number) => (
+                                <View key={iIdx} style={styles.summaryCard}>
+                                    <Text style={styles.summaryLabel}>{item.label}</Text>
+                                    <Text style={[styles.summaryValue, item.isProfit ? styles.profit : item.isLoss ? styles.loss : {}]}>
+                                        {item.value}
+                                    </Text>
+                                </View>
+                            ))}
                         </View>
-                    ))}
-                </View>
+                    )}
 
-                {/* Data Rows */}
-                {data.map((row, rowIdx) => (
-                    <View key={rowIdx} style={styles.tableRow}>
-                        {columns.map((col, colIdx) => (
-                            <View key={colIdx} style={styles.tableCol}>
-                                <Text style={styles.tableCell}>
-                                    {col.format ? col.format(row[col.key]) : row[col.key]}
-                                </Text>
+                    {section.type === 'table' && section.columns && (
+                        <View style={styles.table}>
+                            <View style={[styles.tableRow, styles.tableHeader]}>
+                                {section.columns.map((col, cIdx) => (
+                                    <View key={cIdx} style={[styles.tableCol, col.width ? { flex: 0, width: col.width } : {}]}>
+                                        <Text style={[styles.tableCell, styles.bold]}>{col.label}</Text>
+                                    </View>
+                                ))}
                             </View>
-                        ))}
-                    </View>
-                ))}
-            </View>
+                            {section.data.map((row: any, rIdx: number) => (
+                                <View key={rIdx} style={styles.tableRow}>
+                                    {section.columns!.map((col, cIdx) => (
+                                        <View key={cIdx} style={[styles.tableCol, col.width ? { flex: 0, width: col.width } : {}]}>
+                                            <Text style={styles.tableCell}>
+                                                {col.format ? col.format(row[col.key]) : row[col.key]}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
-            {/* Totals */}
-            <View style={styles.totalsSection}>
-                {totals.map((total, idx) => (
-                    <View key={idx} style={styles.totalItem}>
-                        <Text style={styles.totalLabel}>{total.label}</Text>
-                        <Text style={styles.totalValue}>{total.value}</Text>
-                    </View>
-                ))}
-            </View>
+                    {section.type === 'list' && (
+                        <View style={{ gap: 4 }}>
+                            {section.data.map((item: any, iIdx: number) => (
+                                <View key={iIdx} style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#F3F4F6', paddingVertical: 4 }}>
+                                    <Text style={{ fontSize: 8 }}>{item.label}</Text>
+                                    <Text style={{ fontSize: 8, fontWeight: 'bold' }}>{item.value}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+                </View>
+            ))}
 
             {/* Footer */}
             <Text
