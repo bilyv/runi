@@ -5,9 +5,7 @@ import { AuditSales } from "./AuditSales";
 import { SubTabs } from "../../components/ui/SubTabs";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { DebtorsList } from "../../components/DebtorsList";
-
-type TabType = "add" | "manage" | "audit" | "debtors";
+type TabType = "add" | "manage" | "audit";
 
 export function Sales() {
   const [activeTab, setActiveTab] = useState<TabType>("add");
@@ -16,7 +14,6 @@ export function Sales() {
     { id: "add", label: "Add Sale" },
     { id: "manage", label: "Manage Sales" },
     { id: "audit", label: "Audit Sales" },
-    { id: "debtors", label: "Debtors" },
   ];
 
   return (
@@ -48,7 +45,6 @@ export function Sales() {
             {activeTab === "add" && <AddSale />}
             {activeTab === "manage" && <ManageSales />}
             {activeTab === "audit" && <AuditSales />}
-            {activeTab === "debtors" && <DebtorsList />}
           </motion.div>
         </AnimatePresence>
       </div>

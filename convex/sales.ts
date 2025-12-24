@@ -390,7 +390,7 @@ export const getDebtors = query({
       .withIndex("by_payment_status", (q) => q.eq("payment_status", "partial"))
       .collect();
 
-    const allUnpaidSales = [...pendingSales, ...partialSales];
+    const allUnpaidSales = [...pendingSales, ...partialSales].filter(s => s.user_id === userId);
 
     // Group by client
     const debtorMap = new Map<string, {
@@ -472,9 +472,9 @@ export const processDebtorPayment = mutation({
       .withIndex("by_payment_status", (q) => q.eq("payment_status", "partial"))
       .collect();
 
-    // Filter by client name and sort by date (FIFO)
+    // Filter by client name, user_id, and sort by date (FIFO)
     const clientSales = [...pendingSales, ...partialSales]
-      .filter(s => s.client_name === args.clientName)
+      .filter(s => s.client_name === args.clientName && s.user_id === userId)
       .sort((a, b) => a.updated_at - b.updated_at); // ASCENDING order (oldest first)
 
     let remainingPayment = args.amount;
