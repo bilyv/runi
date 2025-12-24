@@ -1,7 +1,8 @@
 import { StaffProfile } from "./StaffProfile";
 import { ThemeSettings } from "./ThemeSettings";
+import { LanguageSettings } from "./LanguageSettings";
 import { motion } from "framer-motion";
-import { User, Palette, Settings as SettingsIcon, ShieldCheck } from "lucide-react";
+import { User, Palette, Settings as SettingsIcon, ShieldCheck, Globe } from "lucide-react";
 
 interface StaffSettingsProps {
     staffUser: any;
@@ -70,6 +71,24 @@ export function StaffSettings({ staffUser }: StaffSettingsProps) {
                     </div>
                     <div className="bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-[2.5rem] border border-white/40 dark:border-white/10 p-1 shadow-sm overflow-hidden">
                         <ThemeSettings />
+                    </div>
+                </motion.section>
+
+                {/* Localization Section */}
+                <motion.section
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.45 }}
+                    className="space-y-6"
+                >
+                    <div className="flex items-center space-x-3 px-4">
+                        <div className="p-2.5 bg-emerald-500/10 rounded-2xl text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <Globe size={22} />
+                        </div>
+                        <h2 className="text-2xl font-bold font-display tracking-tight text-gray-900 dark:text-white">Localization</h2>
+                    </div>
+                    <div className="bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-[2.5rem] border border-white/40 dark:border-white/10 p-8 shadow-sm">
+                        <LanguageSettings />
                     </div>
                 </motion.section>
 

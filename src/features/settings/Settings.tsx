@@ -1,7 +1,9 @@
 import { UserProfile } from "./UserProfile";
 import { ThemeSettings } from "./ThemeSettings";
+import { CurrencySettings } from "./CurrencySettings";
+import { LanguageSettings } from "./LanguageSettings";
 import { motion } from "framer-motion";
-import { User, Palette, Settings as SettingsIcon } from "lucide-react";
+import { User, Palette, Settings as SettingsIcon, Globe, MapPin } from "lucide-react";
 
 export function Settings() {
   return (
@@ -47,6 +49,22 @@ export function Settings() {
           </div>
           <div className="bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-[2.5rem] border border-white/40 dark:border-white/10 p-8 shadow-sm hover:shadow-md transition-shadow">
             <ThemeSettings />
+          </div>
+        </section>
+
+        {/* Localization Section */}
+        <section className="space-y-6">
+          <div className="flex items-center space-x-3 px-2">
+            <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600 dark:text-emerald-400">
+              <MapPin size={20} />
+            </div>
+            <h2 className="text-2xl font-bold font-display tracking-tight text-gray-900 dark:text-white">Business Localization</h2>
+          </div>
+          <div className="bg-white/40 dark:bg-black/20 backdrop-blur-md rounded-[2.5rem] border border-white/40 dark:border-white/10 p-8 shadow-sm space-y-12">
+            <CurrencySettings />
+            <div className="pt-8 border-t border-gray-100 dark:border-white/5">
+              <LanguageSettings />
+            </div>
           </div>
         </section>
       </div>
